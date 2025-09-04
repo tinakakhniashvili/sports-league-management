@@ -1,11 +1,12 @@
 package organizations;
 
 public class League extends Organization {
+
+    private static final int MAX_TEAMS = 50;
+
     private String sportType;
     private int seasonYear;
     private int numberOfTeams;
-
-    private static final int MAX_TEAMS = 50;
 
     static {
         System.out.println("League class loaded");

@@ -1,10 +1,11 @@
 package events;
 
 public class Schedule extends Event {
-    private String leagueName;
-    private int roundNumber;
 
     private static final int MAX_ROUNDS = 50;
+
+    private String leagueName;
+    private int roundNumber;
 
     static {
         System.out.println("Schedule class loaded");

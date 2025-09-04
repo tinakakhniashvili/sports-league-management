@@ -1,11 +1,12 @@
 package organizations;
 
 public class Organization {
+
+    private static final int MIN_NAME_LENGTH = 2;
+
     private int id;
     private String name;
     private int foundedYear;
-
-    private static final int MIN_NAME_LENGTH = 2;
 
     static {
         System.out.println("Organization class loaded");

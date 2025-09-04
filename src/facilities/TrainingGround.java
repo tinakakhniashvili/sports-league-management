@@ -1,10 +1,11 @@
 package facilities;
 
 public class TrainingGround extends Facility {
-    private boolean indoor;
-    private int fieldsCount;
 
     private static final int MIN_FIELDS = 1;
+
+    private boolean indoor;
+    private int fieldsCount;
 
     static {
         System.out.println("TrainingGround class loaded");

@@ -4,9 +4,12 @@ import people.*;
 import organizations.*;
 import facilities.*;
 import events.*;
+import services.BookingService;
 
 public class Main {
+
     public static void main(String[] args) {
+
         Player player = new Player(1, "Giorgi", "Mamulashvili", 23, "Forward", 10, true);
         Coach coach = new Coach(2, "Avtandil", "Kvachantiradze", 50, 25, "Pro License");
         Referee referee = new Referee(3, "Zaza", "Kakabadze", 40, "FIFA", 200);
@@ -29,6 +32,9 @@ public class Main {
         trainingGround.conductTraining();
         match.play();
         schedule.publish();
+
+        BookingService bookingService = new BookingService();
+        bookingService.book(match, stadium, 18000, 1.25);
 
         System.out.println(player);
         System.out.println(coach);

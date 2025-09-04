@@ -1,10 +1,11 @@
 package facilities;
 
 public class Stadium extends Facility {
-    private int capacity;
-    private String surfaceType;
 
     private static final int MIN_CAPACITY = 1000;
+
+    private int capacity;
+    private String surfaceType;
 
     static {
         System.out.println("Stadium class loaded");

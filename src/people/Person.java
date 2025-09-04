@@ -2,12 +2,12 @@ package people;
 
 public class Person {
 
+    private static final int MIN_AGE = 18;
+
     private int id;
     private String name;
     private String surname;
     private int age;
-
-    private static final int MIN_AGE = 18;
 
     static {
         System.out.println("Person class loaded");

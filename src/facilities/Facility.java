@@ -1,11 +1,12 @@
 package facilities;
 
 public class Facility {
+
+    private static final int MIN_NAME_LENGTH = 3;
+
     private int id;
     private String name;
     private String location;
-
-    private static final int MIN_NAME_LENGTH = 3;
 
     static {
         System.out.println("Facility class loaded");

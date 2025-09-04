@@ -1,6 +1,7 @@
 package people;
 
 public class Referee extends Person {
+
     private String certificationLevel;
     private int matchesOfficiated;
 

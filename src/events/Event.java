@@ -1,11 +1,12 @@
 package events;
 
 public class Event {
+
+    private static final String DEFAULT_DESCRIPTION = "No description";
+
     private int id;
     private String dateTime;
     private String description;
-
-    private static final String DEFAULT_DESCRIPTION = "No description";
 
     static {
         System.out.println("Event class loaded");

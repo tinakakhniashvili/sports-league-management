@@ -1,6 +1,7 @@
 package people;
 
 public class Player extends Person {
+
     private String position;
     private int jerseyNumber;
     private boolean isCaptain;

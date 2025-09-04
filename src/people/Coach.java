@@ -1,6 +1,7 @@
 package people;
 
 public class Coach extends Person {
+
     private int experienceYears;
     private String licenseLevel;
 

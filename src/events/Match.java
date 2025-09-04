@@ -1,14 +1,15 @@
 package events;
 
 public class Match extends Event {
+
+    private static final int MAX_SCORE = 99;
+
     private String homeTeam;
     private String awayTeam;
     private String stadiumName;
     private String refereeName;
     private int homeScore;
     private int awayScore;
-
-    private static final int MAX_SCORE = 99;
 
     static {
         System.out.println("Match class loaded");

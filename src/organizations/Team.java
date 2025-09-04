@@ -1,11 +1,12 @@
 package organizations;
 
 public class Team extends Organization {
+
+    private static final int MAX_PLAYERS = 30;
+
     private String city;
     private String coachName;
     private int playersCount;
-
-    private static final int MAX_PLAYERS = 30;
 
     static {
         System.out.println("Team class loaded");
