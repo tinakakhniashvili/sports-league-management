@@ -1,16 +1,9 @@
 package app;
 
-import facility.Facility;
-import facility.Stadium;
-import facility.TrainingGround;
-import organization.League;
-import organization.Team;
-import organization.Team.Division;
-import person.Coach;
-import person.Player;
-import person.Referee;
-import event.Match;
-import event.Schedule;
+import facility.*;
+import organization.*;
+import person.*;
+import event.*;
 import services.BookingService;
 
 import java.math.BigDecimal;
@@ -30,13 +23,13 @@ public class Main {
 
         Team teamA = new Team(101, "Red Hawks", Year.of(2005), "Tbilisi");
         teamA.setHeadCoach(coach);
-        teamA.setDivision(Division.EAST);
+        teamA.setDivision(Team.Division.EAST);
         teamA.addPlayer(p1);
         teamA.addPlayer(p2);
         teamA.addPlayer(p3);
 
         Team teamB = new Team(102, "Blue Bears", Year.of(2010), "Batumi");
-        teamB.setDivision(Division.WEST);
+        teamB.setDivision(Team.Division.WEST);
 
         Team[] leagueTeams = new Team[] { teamA, teamB };
 
