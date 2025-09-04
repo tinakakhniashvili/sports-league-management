@@ -1,12 +1,14 @@
-package people;
+package person;
+
+import java.time.LocalDate;
 
 public class Coach extends Person {
 
     private int experienceYears;
     private String licenseLevel;
 
-    public Coach(int id, String name, String surname, int age, int experienceYears, String licenseLevel) {
-        super(id, name, surname, age);
+    public Coach(int id, String name, String surname, LocalDate birthDate, int experienceYears, String licenseLevel) {
+        super(id, name, surname, birthDate);
         this.experienceYears = experienceYears;
         this.licenseLevel = licenseLevel;
     }

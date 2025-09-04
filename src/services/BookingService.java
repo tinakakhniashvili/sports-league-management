@@ -1,7 +1,7 @@
 package services;
 
-import events.Match;
-import facilities.Stadium;
+import event.Match;
+import facility.Stadium;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

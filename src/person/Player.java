@@ -1,4 +1,6 @@
-package people;
+package person;
+
+import java.time.LocalDate;
 
 public class Player extends Person {
 
@@ -6,8 +8,8 @@ public class Player extends Person {
     private int jerseyNumber;
     private boolean isCaptain;
 
-    public Player(int id, String name, String surname, int age, String position, int jerseyNumber, boolean isCaptain) {
-        super(id, name, surname, age);
+    public Player(int id, String name, String surname, LocalDate birthDate, String position, int jerseyNumber, boolean isCaptain) {
+        super(id, name, surname, birthDate);
         this.jerseyNumber = jerseyNumber;
         this.position = position;
         this.isCaptain = isCaptain;

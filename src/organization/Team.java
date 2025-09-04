@@ -1,7 +1,9 @@
-package organizations;
+package organization;
 
-import people.Coach;
-import people.Player;
+import person.Coach;
+import person.Player;
+
+import java.time.Year;
 
 public class Team extends Organization {
 
@@ -10,24 +12,17 @@ public class Team extends Organization {
     private String city;
     private Coach headCoach;
     private Player[] roster;
-    private byte disciplinaryPoints;
-    private char division;
-    private int playersCount;
+    private int disciplinaryPoints;
+    private Division division;
 
     static {
         System.out.println("Team class loaded");
     }
 
-    public Team(int id, String name, int foundedYear, String city,
-                Coach headCoach, Player[] roster,
-                byte disciplinaryPoints, char division) {
+    public Team(int id, String name, Year foundedYear, String city) {
         super(id, name, foundedYear);
         this.city = city;
-        this.headCoach = headCoach;
-        this.roster = roster;
-        this.disciplinaryPoints = disciplinaryPoints;
-        this.division = division;
-        this.playersCount = roster != null ? roster.length : 0;
+        this.roster = new Player[0];
     }
 
     public static boolean isValidPlayersCount(int count) {
@@ -35,7 +30,20 @@ public class Team extends Organization {
     }
 
     public void playMatch() {
-        System.out.println(getName() + " from " + city + " is playing a match with " + playersCount + " players.");
+        System.out.println(getName() + " from " + city +
+                " is playing a match with " + getPlayersCount() + " players.");
+    }
+
+    public void addPlayer(Player player) {
+        if (player == null) return;
+        Player[] next = new Player[roster.length + 1];
+        System.arraycopy(roster, 0, next, 0, roster.length);
+        next[roster.length] = player;
+        roster = next;
+    }
+
+    public void addDisciplinaryPoints(int delta) {
+        this.disciplinaryPoints += delta;
     }
 
     public String getCity() {
@@ -59,28 +67,27 @@ public class Team extends Organization {
     }
 
     public void setRoster(Player[] roster) {
-        this.roster = roster;
-        this.playersCount = roster != null ? roster.length : 0;
+        this.roster = roster != null ? roster : new Player[0];
     }
 
-    public byte getDisciplinaryPoints() {
+    public int getDisciplinaryPoints() {
         return disciplinaryPoints;
     }
 
-    public void setDisciplinaryPoints(byte disciplinaryPoints) {
+    public void setDisciplinaryPoints(int disciplinaryPoints) {
         this.disciplinaryPoints = disciplinaryPoints;
     }
 
-    public char getDivision() {
+    public Division getDivision() {
         return division;
     }
 
-    public void setDivision(char division) {
+    public void setDivision(Division division) {
         this.division = division;
     }
 
     public int getPlayersCount() {
-        return playersCount;
+        return roster.length;
     }
 
     @Override
@@ -88,8 +95,10 @@ public class Team extends Organization {
         return super.toString() +
                 ", city='" + city + '\'' +
                 ", headCoach=" + (headCoach != null ? headCoach.fullName() : "none") +
-                ", division=" + division +
-                ", playersCount=" + playersCount +
+                ", division=" + (division != null ? division : "none") +
+                ", playersCount=" + getPlayersCount() +
                 ", disciplinaryPoints=" + disciplinaryPoints;
     }
+
+    public enum Division { EAST, WEST, NORTH, SOUTH }
 }

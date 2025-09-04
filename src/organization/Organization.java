@@ -1,4 +1,6 @@
-package organizations;
+package organization;
+
+import java.time.Year;
 
 public class Organization {
 
@@ -6,13 +8,13 @@ public class Organization {
 
     private int id;
     private String name;
-    private int foundedYear;
+    private Year foundedYear;
 
     static {
         System.out.println("Organization class loaded");
     }
 
-    public Organization(int id, String name, int foundedYear) {
+    public Organization(int id, String name, Year foundedYear) {
         this.id = id;
         this.name = name;
         this.foundedYear = foundedYear;
@@ -23,7 +25,9 @@ public class Organization {
     }
 
     public String summary() {
-        return "Organization: id=" + id + ", name='" + name + '\'' + ", foundedYear=" + foundedYear;
+        return "Organization: id=" + id +
+                ", name='" + name + '\'' +
+                ", foundedYear=" + foundedYear;
     }
 
     public int getId() {
@@ -42,11 +46,11 @@ public class Organization {
         this.name = name;
     }
 
-    public int getFoundedYear() {
+    public Year getFoundedYear() {
         return foundedYear;
     }
 
-    public void setFoundedYear(int foundedYear) {
+    public void setFoundedYear(Year foundedYear) {
         this.foundedYear = foundedYear;
     }
 

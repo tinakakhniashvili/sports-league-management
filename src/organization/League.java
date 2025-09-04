@@ -1,33 +1,27 @@
-package organizations;
+package organization;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.Year;
 
 public class League extends Organization {
 
     private static final int MAX_TEAMS = 50;
 
     private String sportType;
-    private short seasonYear;
-    private int numberOfTeams;
+    private Year seasonYear;
     private LocalDate seasonStartDate;
-    private BigDecimal prizeFund;
     private Team[] teams;
 
     static {
         System.out.println("League class loaded");
     }
 
-    public League(int id, String name, int foundedYear,
-                  String sportType, short seasonYear, int numberOfTeams,
-                  LocalDate seasonStartDate, BigDecimal prizeFund, Team[] teams) {
+    public League(int id, String name, Year foundedYear,
+                  String sportType, Year seasonYear) {
         super(id, name, foundedYear);
         this.sportType = sportType;
         this.seasonYear = seasonYear;
-        this.numberOfTeams = numberOfTeams;
-        this.seasonStartDate = seasonStartDate;
-        this.prizeFund = prizeFund;
-        this.teams = teams;
+        this.teams = new Team[0];
     }
 
     public static boolean isValidTeamCount(int count) {
@@ -36,7 +30,11 @@ public class League extends Organization {
 
     public void scheduleSeason() {
         System.out.println("Scheduling " + sportType + " league " + seasonYear +
-                " for " + getName() + " with " + numberOfTeams + " teams.");
+                " for " + getName() + " with " + getNumberOfTeams() + " teams.");
+    }
+
+    public int getNumberOfTeams() {
+        return teams.length;
     }
 
     public String getSportType() {
@@ -47,20 +45,12 @@ public class League extends Organization {
         this.sportType = sportType;
     }
 
-    public short getSeasonYear() {
+    public Year getSeasonYear() {
         return seasonYear;
     }
 
-    public void setSeasonYear(short seasonYear) {
+    public void setSeasonYear(Year seasonYear) {
         this.seasonYear = seasonYear;
-    }
-
-    public int getNumberOfTeams() {
-        return numberOfTeams;
-    }
-
-    public void setNumberOfTeams(int numberOfTeams) {
-        this.numberOfTeams = numberOfTeams;
     }
 
     public LocalDate getSeasonStartDate() {
@@ -69,14 +59,6 @@ public class League extends Organization {
 
     public void setSeasonStartDate(LocalDate seasonStartDate) {
         this.seasonStartDate = seasonStartDate;
-    }
-
-    public BigDecimal getPrizeFund() {
-        return prizeFund;
-    }
-
-    public void setPrizeFund(BigDecimal prizeFund) {
-        this.prizeFund = prizeFund;
     }
 
     public Team[] getTeams() {
@@ -92,8 +74,7 @@ public class League extends Organization {
         return super.toString() +
                 ", sportType='" + sportType + '\'' +
                 ", seasonYear=" + seasonYear +
-                ", numberOfTeams=" + numberOfTeams +
                 ", seasonStartDate=" + seasonStartDate +
-                ", prizeFund=" + prizeFund;
+                ", teams=" + getNumberOfTeams();
     }
 }

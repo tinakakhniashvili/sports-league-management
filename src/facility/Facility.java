@@ -1,4 +1,4 @@
-package facilities;
+package facility;
 
 public class Facility {
 

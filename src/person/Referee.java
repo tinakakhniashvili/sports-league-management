@@ -1,12 +1,14 @@
-package people;
+package person;
+
+import java.time.LocalDate;
 
 public class Referee extends Person {
 
     private String certificationLevel;
     private int matchesOfficiated;
 
-    public Referee(int id, String name, String surname, int age, String certificationLevel, int matchesOfficiated) {
-        super(id, name, surname, age);
+    public Referee(int id, String name, String surname, LocalDate birthDate, String certificationLevel, int matchesOfficiated) {
+        super(id, name, surname, birthDate);
         this.certificationLevel = certificationLevel;
         this.matchesOfficiated = matchesOfficiated;
     }

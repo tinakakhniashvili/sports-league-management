@@ -1,7 +1,6 @@
-package events;
+package event;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 public class Schedule extends Event {
 
@@ -16,14 +15,10 @@ public class Schedule extends Event {
         System.out.println("Schedule class loaded");
     }
 
-    public Schedule(int id, LocalDateTime dateTime, String description,
-                    String leagueName, int roundNumber,
-                    LocalDate roundDate, long spectatorsExpected) {
-        super(id, dateTime, description);
+    public Schedule(int id, String leagueName, int roundNumber) {
+        super(id);
         this.leagueName = leagueName;
         this.roundNumber = roundNumber;
-        this.roundDate = roundDate;
-        this.spectatorsExpected = spectatorsExpected;
     }
 
     public static boolean isValidRound(int round) {

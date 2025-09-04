@@ -1,4 +1,6 @@
-package people;
+package person;
+
+import java.time.LocalDate;
 
 public class Person {
 
@@ -7,25 +9,29 @@ public class Person {
     private int id;
     private String name;
     private String surname;
-    private int age;
+    private LocalDate birthDate;
 
     static {
         System.out.println("Person class loaded");
     }
 
-    public Person(int id, String name, String surname, int age) {
+    public Person(int id, String name, String surname, LocalDate birthDate) {
         this.id = id;
         this.name = name;
         this.surname = surname;
-        this.age = age;
+        this.birthDate = birthDate;
     }
 
-    public static boolean isValidAge(int age ) {
+    public static boolean isValidAge(int age) {
         return age >= MIN_AGE;
     }
 
-    public String fullName(){
+    public String fullName() {
         return name + " " + surname;
+    }
+
+    public int getAge() {
+        return LocalDate.now().getYear() - birthDate.getYear();
     }
 
     public int getId() {
@@ -52,12 +58,12 @@ public class Person {
         this.surname = surname;
     }
 
-    public int getAge() {
-        return age;
+    public LocalDate getBirthDate() {
+        return birthDate;
     }
 
-    public void setAge(int age) {
-        this.age = age;
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
     }
 
     @Override
@@ -65,6 +71,7 @@ public class Person {
         return "Person: id=" + id +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
-                ", age=" + age;
+                ", birthDate=" + birthDate +
+                ", age=" + getAge();
     }
 }

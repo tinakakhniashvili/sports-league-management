@@ -1,39 +1,30 @@
-package events;
+package event;
 
-import java.time.LocalDateTime;
-import people.Player;
-import people.Referee;
+import person.Player;
+import person.Referee;
 
 public class Match extends Event {
 
     private static final int MAX_SCORE = 99;
 
-    private String homeTeam;
-    private String awayTeam;
+    private final String homeTeam;
+    private final String awayTeam;
     private String stadiumName;
     private int homeScore;
     private int awayScore;
     private long expectedAttendance;
-    private Referee[] officials;
-    private Player[] homeSquad;
-    private Player[] awaySquad;
+    private Referee[] officials =  new Referee[0];
+    private Player[] homeSquad = new Player[0];
+    private Player[] awaySquad = new Player[0];
 
     static {
         System.out.println("Match class loaded");
     }
 
-    public Match(int id, LocalDateTime dateTime, String description,
-                 String homeTeam, String awayTeam, String stadiumName,
-                 long expectedAttendance, Referee[] officials,
-                 Player[] homeSquad, Player[] awaySquad) {
-        super(id, dateTime, description);
+    public Match(int id, String homeTeam, String awayTeam) {
+        super(id);
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
-        this.stadiumName = stadiumName;
-        this.expectedAttendance = expectedAttendance;
-        this.officials = officials;
-        this.homeSquad = homeSquad;
-        this.awaySquad = awaySquad;
     }
 
     public static boolean isValidScore(int score) {
@@ -48,16 +39,8 @@ public class Match extends Event {
         return homeTeam;
     }
 
-    public void setHomeTeam(String homeTeam) {
-        this.homeTeam = homeTeam;
-    }
-
     public String getAwayTeam() {
         return awayTeam;
-    }
-
-    public void setAwayTeam(String awayTeam) {
-        this.awayTeam = awayTeam;
     }
 
     public String getStadiumName() {
@@ -73,7 +56,7 @@ public class Match extends Event {
     }
 
     public void setHomeScore(int homeScore) {
-        this.homeScore = homeScore;
+        if(isValidScore(homeScore)) this.homeScore = homeScore;
     }
 
     public int getAwayScore() {
@@ -81,7 +64,7 @@ public class Match extends Event {
     }
 
     public void setAwayScore(int awayScore) {
-        this.awayScore = awayScore;
+        if(isValidScore(awayScore)) this.awayScore = awayScore;
     }
 
     public long getExpectedAttendance() {
