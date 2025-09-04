@@ -52,7 +52,8 @@ public class Facility {
 
     @Override
     public String toString() {
-        return "Facility: id=" + id +
+        return "Facility: " +
+                "id=" + id +
                 ", name='" + name + '\'' +
                 ", location='" + location + '\'';
     }

@@ -1,18 +1,20 @@
 package events;
 
+import java.time.LocalDateTime;
+
 public class Event {
 
     private static final String DEFAULT_DESCRIPTION = "No description";
 
     private int id;
-    private String dateTime;
+    private LocalDateTime dateTime;
     private String description;
 
     static {
         System.out.println("Event class loaded");
     }
 
-    public Event(int id, String dateTime, String description) {
+    public Event(int id, LocalDateTime dateTime, String description) {
         this.id = id;
         this.dateTime = dateTime;
         this.description = description == null ? DEFAULT_DESCRIPTION : description;
@@ -34,11 +36,11 @@ public class Event {
         this.id = id;
     }
 
-    public String getDateTime() {
+    public LocalDateTime getDateTime() {
         return dateTime;
     }
 
-    public void setDateTime(String dateTime) {
+    public void setDateTime(LocalDateTime dateTime) {
         this.dateTime = dateTime;
     }
 

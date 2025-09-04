@@ -1,5 +1,9 @@
 package events;
 
+import java.time.LocalDateTime;
+import people.Player;
+import people.Referee;
+
 public class Match extends Event {
 
     private static final int MAX_SCORE = 99;
@@ -7,20 +11,29 @@ public class Match extends Event {
     private String homeTeam;
     private String awayTeam;
     private String stadiumName;
-    private String refereeName;
     private int homeScore;
     private int awayScore;
+    private long expectedAttendance;
+    private Referee[] officials;
+    private Player[] homeSquad;
+    private Player[] awaySquad;
 
     static {
         System.out.println("Match class loaded");
     }
 
-    public Match(int id, String dateTime, String description, String homeTeam, String awayTeam, String stadiumName, String refereeName) {
+    public Match(int id, LocalDateTime dateTime, String description,
+                 String homeTeam, String awayTeam, String stadiumName,
+                 long expectedAttendance, Referee[] officials,
+                 Player[] homeSquad, Player[] awaySquad) {
         super(id, dateTime, description);
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;
         this.stadiumName = stadiumName;
-        this.refereeName = refereeName;
+        this.expectedAttendance = expectedAttendance;
+        this.officials = officials;
+        this.homeSquad = homeSquad;
+        this.awaySquad = awaySquad;
     }
 
     public static boolean isValidScore(int score) {
@@ -28,7 +41,7 @@ public class Match extends Event {
     }
 
     public void play() {
-        System.out.println("Match: " + homeTeam + " vs " + awayTeam + " at " + stadiumName + " officiated by " + refereeName + ".");
+        System.out.println("Match: " + homeTeam + " vs " + awayTeam + " at " + stadiumName + ".");
     }
 
     public String getHomeTeam() {
@@ -55,14 +68,6 @@ public class Match extends Event {
         this.stadiumName = stadiumName;
     }
 
-    public String getRefereeName() {
-        return refereeName;
-    }
-
-    public void setRefereeName(String refereeName) {
-        this.refereeName = refereeName;
-    }
-
     public int getHomeScore() {
         return homeScore;
     }
@@ -79,14 +84,46 @@ public class Match extends Event {
         this.awayScore = awayScore;
     }
 
+    public long getExpectedAttendance() {
+        return expectedAttendance;
+    }
+
+    public void setExpectedAttendance(long expectedAttendance) {
+        this.expectedAttendance = expectedAttendance;
+    }
+
+    public Referee[] getOfficials() {
+        return officials;
+    }
+
+    public void setOfficials(Referee[] officials) {
+        this.officials = officials;
+    }
+
+    public Player[] getHomeSquad() {
+        return homeSquad;
+    }
+
+    public void setHomeSquad(Player[] homeSquad) {
+        this.homeSquad = homeSquad;
+    }
+
+    public Player[] getAwaySquad() {
+        return awaySquad;
+    }
+
+    public void setAwaySquad(Player[] awaySquad) {
+        this.awaySquad = awaySquad;
+    }
+
     @Override
     public String toString() {
         return super.toString() +
                 ", homeTeam='" + homeTeam + '\'' +
                 ", awayTeam='" + awayTeam + '\'' +
                 ", stadiumName='" + stadiumName + '\'' +
-                ", refereeName='" + refereeName + '\'' +
                 ", homeScore=" + homeScore +
-                ", awayScore=" + awayScore;
+                ", awayScore=" + awayScore +
+                ", expectedAttendance=" + expectedAttendance;
     }
 }
