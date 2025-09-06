@@ -7,7 +7,7 @@ public class Event {
 
     private static final String DEFAULT_DESCRIPTION = "No description";
 
-    private final int id;
+    private final Integer id;
     private LocalDateTime dateTime;
     private String description = DEFAULT_DESCRIPTION;
 
@@ -15,7 +15,7 @@ public class Event {
         System.out.println("Event class loaded");
     }
 
-    public Event(int id) {
+    public Event(Integer id) {
         this.id = id;
     }
 
@@ -31,7 +31,7 @@ public class Event {
         this.description = text.trim();
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 

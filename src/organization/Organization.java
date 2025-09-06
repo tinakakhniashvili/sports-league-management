@@ -6,7 +6,7 @@ public class Organization {
 
     private static final int MIN_NAME_LENGTH = 2;
 
-    private int id;
+    private Integer id;
     private String name;
     private Year foundedYear;
 
@@ -14,7 +14,7 @@ public class Organization {
         System.out.println("Organization class loaded");
     }
 
-    public Organization(int id, String name, Year foundedYear) {
+    public Organization(Integer id, String name, Year foundedYear) {
         this.id = id;
         this.name = name;
         this.foundedYear = foundedYear;
@@ -30,11 +30,11 @@ public class Organization {
                 ", foundedYear=" + foundedYear;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

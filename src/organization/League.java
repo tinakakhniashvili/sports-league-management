@@ -16,7 +16,7 @@ public class League extends Organization {
         System.out.println("League class loaded");
     }
 
-    public League(int id, String name, Year foundedYear,
+    public League(Integer id, String name, Year foundedYear,
                   String sportType, Year seasonYear) {
         super(id, name, foundedYear);
         this.sportType = sportType;

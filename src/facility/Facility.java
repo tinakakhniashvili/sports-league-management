@@ -4,7 +4,7 @@ public class Facility {
 
     private static final int MIN_NAME_LENGTH = 3;
 
-    private int id;
+    private Integer id;
     private String name;
     private String location;
 
@@ -12,7 +12,7 @@ public class Facility {
         System.out.println("Facility class loaded");
     }
 
-    public Facility(int id, String name, String location) {
+    public Facility(Integer id, String name, String location) {
         this.id = id;
         this.name = name;
         this.location = location;
@@ -26,11 +26,11 @@ public class Facility {
         System.out.println("Facility " + name + " at " + location + " is now open.");
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

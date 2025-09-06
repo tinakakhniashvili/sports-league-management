@@ -13,7 +13,7 @@ public class Stadium extends Facility {
         System.out.println("Stadium class loaded");
     }
 
-    public Stadium(int id, String name, String location, int capacity, String surfaceType,
+    public Stadium(Integer id, String name, String location, int capacity, String surfaceType,
                    float pitchSlopePercent, char sectorLetter) {
         super(id, name, location);
         this.capacity = capacity;

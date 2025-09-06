@@ -11,7 +11,7 @@ public class TrainingGround extends Facility {
         System.out.println("TrainingGround class loaded");
     }
 
-    public TrainingGround(int id, String name, String location, boolean indoor, int fieldsCount) {
+    public TrainingGround(Integer id, String name, String location, boolean indoor, int fieldsCount) {
         super(id, name, location);
         this.indoor = indoor;
         this.fieldsCount = fieldsCount;

@@ -19,7 +19,9 @@ public class Team extends Organization {
         System.out.println("Team class loaded");
     }
 
-    public Team(int id, String name, Year foundedYear, String city) {
+    public enum Division { EAST, WEST, NORTH, SOUTH }
+
+    public Team(Integer id, String name, Year foundedYear, String city) {
         super(id, name, foundedYear);
         this.city = city;
         this.roster = new Player[0];
@@ -99,6 +101,4 @@ public class Team extends Organization {
                 ", playersCount=" + getPlayersCount() +
                 ", disciplinaryPoints=" + disciplinaryPoints;
     }
-
-    public enum Division { EAST, WEST, NORTH, SOUTH }
 }

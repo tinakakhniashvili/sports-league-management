@@ -6,7 +6,7 @@ public class Person {
 
     private static final int MIN_AGE = 18;
 
-    private int id;
+    private Integer id;
     private String name;
     private String surname;
     private LocalDate birthDate;
@@ -15,7 +15,7 @@ public class Person {
         System.out.println("Person class loaded");
     }
 
-    public Person(int id, String name, String surname, LocalDate birthDate) {
+    public Person(Integer id, String name, String surname, LocalDate birthDate) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -34,11 +34,11 @@ public class Person {
         return LocalDate.now().getYear() - birthDate.getYear();
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

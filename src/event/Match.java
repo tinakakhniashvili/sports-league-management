@@ -21,7 +21,7 @@ public class Match extends Event {
         System.out.println("Match class loaded");
     }
 
-    public Match(int id, String homeTeam, String awayTeam) {
+    public Match(Integer id, String homeTeam, String awayTeam) {
         super(id);
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;

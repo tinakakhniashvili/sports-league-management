@@ -7,7 +7,7 @@ public class Referee extends Person {
     private String certificationLevel;
     private int matchesOfficiated;
 
-    public Referee(int id, String name, String surname, LocalDate birthDate, String certificationLevel, int matchesOfficiated) {
+    public Referee(Integer id, String name, String surname, LocalDate birthDate, String certificationLevel, int matchesOfficiated) {
         super(id, name, surname, birthDate);
         this.certificationLevel = certificationLevel;
         this.matchesOfficiated = matchesOfficiated;

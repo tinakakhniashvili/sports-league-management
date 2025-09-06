@@ -7,7 +7,7 @@ public class Coach extends Person {
     private int experienceYears;
     private String licenseLevel;
 
-    public Coach(int id, String name, String surname, LocalDate birthDate, int experienceYears, String licenseLevel) {
+    public Coach(Integer id, String name, String surname, LocalDate birthDate, int experienceYears, String licenseLevel) {
         super(id, name, surname, birthDate);
         this.experienceYears = experienceYears;
         this.licenseLevel = licenseLevel;

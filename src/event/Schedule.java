@@ -15,7 +15,7 @@ public class Schedule extends Event {
         System.out.println("Schedule class loaded");
     }
 
-    public Schedule(int id, String leagueName, int roundNumber) {
+    public Schedule(Integer id, String leagueName, int roundNumber) {
         super(id);
         this.leagueName = leagueName;
         this.roundNumber = roundNumber;

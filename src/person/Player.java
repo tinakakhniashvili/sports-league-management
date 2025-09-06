@@ -8,7 +8,7 @@ public class Player extends Person {
     private int jerseyNumber;
     private boolean isCaptain;
 
-    public Player(int id, String name, String surname, LocalDate birthDate, String position, int jerseyNumber, boolean isCaptain) {
+    public Player(Integer id, String name, String surname, LocalDate birthDate, String position, int jerseyNumber, boolean isCaptain) {
         super(id, name, surname, birthDate);
         this.jerseyNumber = jerseyNumber;
         this.position = position;
