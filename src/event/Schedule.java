@@ -1,13 +1,15 @@
 package event;
 
 import java.time.LocalDate;
+import java.math.BigDecimal;
+import java.util.Objects;
 
 public class Schedule extends Event {
 
     private static final int MAX_ROUNDS = 50;
 
-    private String leagueName;
-    private int roundNumber;
+    protected String leagueName;
+    protected int roundNumber;
     private LocalDate roundDate;
     private long spectatorsExpected;
 
@@ -17,8 +19,14 @@ public class Schedule extends Event {
 
     public Schedule(Integer id, String leagueName, int roundNumber) {
         super(id);
-        this.leagueName = leagueName;
+        this.leagueName = Objects.requireNonNull(leagueName, "leagueName cannot be null");
+        if (!isValidRound(roundNumber)) throw new IllegalArgumentException("Invalid round number");
         this.roundNumber = roundNumber;
+    }
+
+    @Override
+    public BigDecimal priceMultiplier() {
+        return new BigDecimal("0.50");
     }
 
     public static boolean isValidRound(int round) {
@@ -26,10 +34,8 @@ public class Schedule extends Event {
     }
 
     public void publish() {
-        System.out.println("Publishing schedule for " + leagueName +
-                ", round " + roundNumber +
-                " on " + roundDate +
-                " with expected spectators: " + spectatorsExpected);
+        System.out.println(String.format("Publishing schedule for %s, round %d on %s with expected spectators: %d",
+                leagueName, roundNumber, roundDate, spectatorsExpected));
     }
 
     public String getLeagueName() {
@@ -37,7 +43,7 @@ public class Schedule extends Event {
     }
 
     public void setLeagueName(String leagueName) {
-        this.leagueName = leagueName;
+        this.leagueName = Objects.requireNonNull(leagueName, "leagueName cannot be null");
     }
 
     public int getRoundNumber() {
@@ -45,6 +51,7 @@ public class Schedule extends Event {
     }
 
     public void setRoundNumber(int roundNumber) {
+        if (!isValidRound(roundNumber)) throw new IllegalArgumentException("Invalid round number");
         this.roundNumber = roundNumber;
     }
 
@@ -61,15 +68,26 @@ public class Schedule extends Event {
     }
 
     public void setSpectatorsExpected(long spectatorsExpected) {
-        this.spectatorsExpected = spectatorsExpected;
+        if (spectatorsExpected >= 0) this.spectatorsExpected = spectatorsExpected;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Schedule)) return false;
+        if (!super.equals(o)) return false;
+        Schedule schedule = (Schedule) o;
+        return roundNumber == schedule.roundNumber && Objects.equals(leagueName, schedule.leagueName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), leagueName, roundNumber);
     }
 
     @Override
     public String toString() {
-        return super.toString() +
-                ", leagueName='" + leagueName + '\'' +
-                ", roundNumber=" + roundNumber +
-                ", roundDate=" + roundDate +
-                ", spectatorsExpected=" + spectatorsExpected;
+        return String.format("%s, leagueName='%s', roundNumber=%d, roundDate=%s, spectatorsExpected=%d",
+                super.toString(), leagueName, roundNumber, roundDate, spectatorsExpected);
     }
 }

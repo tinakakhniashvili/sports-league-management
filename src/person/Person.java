@@ -1,37 +1,42 @@
 package person;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
-public class Person {
+public abstract class Person {
 
     private static final int MIN_AGE = 18;
 
-    private Integer id;
-    private String name;
-    private String surname;
-    private LocalDate birthDate;
+    protected Integer id;
+    protected String name;
+    protected String surname;
+    protected LocalDate birthDate;
 
     static {
         System.out.println("Person class loaded");
     }
 
     public Person(Integer id, String name, String surname, LocalDate birthDate) {
-        this.id = id;
-        this.name = name;
-        this.surname = surname;
-        this.birthDate = birthDate;
+        this.id = Objects.requireNonNull(id, "id cannot be null");
+        this.name = Objects.requireNonNull(name, "name cannot be null").trim();
+        this.surname = Objects.requireNonNull(surname, "surname cannot be null").trim();
+        this.birthDate = Objects.requireNonNull(birthDate, "birthDate cannot be null");
+        if (!isValidAge(getAge())) throw new IllegalArgumentException("Person must be at least 18");
     }
+
+    public abstract String getRole();
+    public abstract double discountRate();
 
     public static boolean isValidAge(int age) {
         return age >= MIN_AGE;
     }
 
     public String fullName() {
-        return name + " " + surname;
+        return String.format("%s %s", name, surname); // Used String.format for readability
     }
 
     public int getAge() {
-        return LocalDate.now().getYear() - birthDate.getYear();
+        return LocalDate.now().getYear() - birthDate.getYear(); // Simplified; assumes approximate age
     }
 
     public Integer getId() {
@@ -39,7 +44,7 @@ public class Person {
     }
 
     public void setId(Integer id) {
-        this.id = id;
+        this.id = Objects.requireNonNull(id, "id cannot be null"); // Added null check
     }
 
     public String getName() {
@@ -47,7 +52,7 @@ public class Person {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = Objects.requireNonNull(name, "name cannot be null").trim(); // Added null check and trim
     }
 
     public String getSurname() {
@@ -55,7 +60,7 @@ public class Person {
     }
 
     public void setSurname(String surname) {
-        this.surname = surname;
+        this.surname = Objects.requireNonNull(surname, "surname cannot be null").trim(); // Added null check and trim
     }
 
     public LocalDate getBirthDate() {
@@ -63,15 +68,26 @@ public class Person {
     }
 
     public void setBirthDate(LocalDate birthDate) {
-        this.birthDate = birthDate;
+        this.birthDate = Objects.requireNonNull(birthDate, "birthDate cannot be null"); // Added null check
+        if (!isValidAge(getAge())) throw new IllegalArgumentException("Person must be at least 18"); // Added validation
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Person)) return false;
+        Person that = (Person) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     @Override
     public String toString() {
-        return "Person: id=" + id +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                ", birthDate=" + birthDate +
-                ", age=" + getAge();
+        return String.format("Person: id=%d, name='%s', surname='%s', birthDate=%s, age=%d",
+                id, name, surname, birthDate, getAge());
     }
 }

@@ -2,18 +2,19 @@ package organization;
 
 import person.Coach;
 import person.Player;
-
 import java.time.Year;
+import java.util.Arrays;
+import java.util.Objects;
 
 public class Team extends Organization {
 
     private static final int MAX_PLAYERS = 30;
 
-    private String city;
+    protected String city;
+    protected Division division;
     private Coach headCoach;
     private Player[] roster;
     private int disciplinaryPoints;
-    private Division division;
 
     static {
         System.out.println("Team class loaded");
@@ -23,7 +24,7 @@ public class Team extends Organization {
 
     public Team(Integer id, String name, Year foundedYear, String city) {
         super(id, name, foundedYear);
-        this.city = city;
+        this.city = Objects.requireNonNull(city, "city cannot be null");
         this.roster = new Player[0];
     }
 
@@ -32,20 +33,21 @@ public class Team extends Organization {
     }
 
     public void playMatch() {
-        System.out.println(getName() + " from " + city +
-                " is playing a match with " + getPlayersCount() + " players.");
+        System.out.println(String.format("%s from %s is playing a match with %d players.",
+                getName(), city, getPlayersCount()));
     }
 
     public void addPlayer(Player player) {
         if (player == null) return;
+        if (roster.length >= MAX_PLAYERS) throw new IllegalStateException("Roster full");
         Player[] next = new Player[roster.length + 1];
         System.arraycopy(roster, 0, next, 0, roster.length);
         next[roster.length] = player;
-        roster = next;
+        roster = Arrays.copyOf(next, next.length);
     }
 
     public void addDisciplinaryPoints(int delta) {
-        this.disciplinaryPoints += delta;
+        if (delta >= 0) this.disciplinaryPoints += delta;
     }
 
     public String getCity() {
@@ -53,7 +55,7 @@ public class Team extends Organization {
     }
 
     public void setCity(String city) {
-        this.city = city;
+        this.city = Objects.requireNonNull(city, "city cannot be null");
     }
 
     public Coach getHeadCoach() {
@@ -65,11 +67,14 @@ public class Team extends Organization {
     }
 
     public Player[] getRoster() {
-        return roster;
+        return Arrays.copyOf(roster, roster.length);
     }
 
     public void setRoster(Player[] roster) {
-        this.roster = roster != null ? roster : new Player[0];
+        if (roster != null && !isValidPlayersCount(roster.length)) {
+            throw new IllegalArgumentException("Invalid player count");
+        }
+        this.roster = roster != null ? Arrays.copyOf(roster, roster.length) : new Player[0];
     }
 
     public int getDisciplinaryPoints() {
@@ -77,7 +82,7 @@ public class Team extends Organization {
     }
 
     public void setDisciplinaryPoints(int disciplinaryPoints) {
-        this.disciplinaryPoints = disciplinaryPoints;
+        if (disciplinaryPoints >= 0) this.disciplinaryPoints = disciplinaryPoints;
     }
 
     public Division getDivision() {
@@ -93,12 +98,23 @@ public class Team extends Organization {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Team)) return false;
+        if (!super.equals(o)) return false;
+        Team team = (Team) o;
+        return Objects.equals(city, team.city) && division == team.division;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), city, division);
+    }
+
+    @Override
     public String toString() {
-        return super.toString() +
-                ", city='" + city + '\'' +
-                ", headCoach=" + (headCoach != null ? headCoach.fullName() : "none") +
-                ", division=" + (division != null ? division : "none") +
-                ", playersCount=" + getPlayersCount() +
-                ", disciplinaryPoints=" + disciplinaryPoints;
+        return String.format("%s, city='%s', headCoach=%s, division=%s, playersCount=%d, disciplinaryPoints=%d",
+                super.toString(), city, (headCoach != null ? headCoach.fullName() : "none"),
+                (division != null ? division : "none"), getPlayersCount(), disciplinaryPoints);
     }
 }

@@ -2,25 +2,30 @@ package organization;
 
 import java.time.LocalDate;
 import java.time.Year;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Arrays;
+import java.util.Objects;
 
 public class League extends Organization {
 
     private static final int MAX_TEAMS = 50;
+    public static final BigDecimal TAX_RATE;
 
-    private String sportType;
-    private Year seasonYear;
+    protected String sportType;
+    protected Year seasonYear;
     private LocalDate seasonStartDate;
     private Team[] teams;
 
     static {
-        System.out.println("League class loaded");
+        TAX_RATE = new BigDecimal("0.18");
+        System.out.println("League class loaded, TAX_RATE initialized to 18%");
     }
 
-    public League(Integer id, String name, Year foundedYear,
-                  String sportType, Year seasonYear) {
+    public League(Integer id, String name, Year foundedYear, String sportType, Year seasonYear) {
         super(id, name, foundedYear);
-        this.sportType = sportType;
-        this.seasonYear = seasonYear;
+        this.sportType = Objects.requireNonNull(sportType, "sportType cannot be null");
+        this.seasonYear = Objects.requireNonNull(seasonYear, "seasonYear cannot be null");
         this.teams = new Team[0];
     }
 
@@ -29,8 +34,13 @@ public class League extends Organization {
     }
 
     public void scheduleSeason() {
-        System.out.println("Scheduling " + sportType + " league " + seasonYear +
-                " for " + getName() + " with " + getNumberOfTeams() + " teams.");
+        System.out.println(String.format("Scheduling %s league %s for %s with %d teams.",
+                sportType, seasonYear, getName(), getNumberOfTeams()));
+    }
+
+    public static BigDecimal applyTax(BigDecimal net) {
+        return net.multiply(BigDecimal.ONE.add(TAX_RATE))
+                .setScale(2, RoundingMode.HALF_UP);
     }
 
     public int getNumberOfTeams() {
@@ -42,7 +52,7 @@ public class League extends Organization {
     }
 
     public void setSportType(String sportType) {
-        this.sportType = sportType;
+        this.sportType = Objects.requireNonNull(sportType, "sportType cannot be null");
     }
 
     public Year getSeasonYear() {
@@ -50,7 +60,7 @@ public class League extends Organization {
     }
 
     public void setSeasonYear(Year seasonYear) {
-        this.seasonYear = seasonYear;
+        this.seasonYear = Objects.requireNonNull(seasonYear, "seasonYear cannot be null");
     }
 
     public LocalDate getSeasonStartDate() {
@@ -62,19 +72,33 @@ public class League extends Organization {
     }
 
     public Team[] getTeams() {
-        return teams;
+        return Arrays.copyOf(teams, teams.length);
     }
 
     public void setTeams(Team[] teams) {
-        this.teams = teams;
+        if (teams != null && !isValidTeamCount(teams.length)) {
+            throw new IllegalArgumentException("Invalid team count");
+        }
+        this.teams = teams != null ? Arrays.copyOf(teams, teams.length) : new Team[0];
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof League)) return false;
+        if (!super.equals(o)) return false;
+        League league = (League) o;
+        return Objects.equals(sportType, league.sportType) && Objects.equals(seasonYear, league.seasonYear);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), sportType, seasonYear);
     }
 
     @Override
     public String toString() {
-        return super.toString() +
-                ", sportType='" + sportType + '\'' +
-                ", seasonYear=" + seasonYear +
-                ", seasonStartDate=" + seasonStartDate +
-                ", teams=" + getNumberOfTeams();
+        return String.format("%s, sportType='%s', seasonYear=%s, seasonStartDate=%s, teams=%d",
+                super.toString(), sportType, seasonYear, seasonStartDate, getNumberOfTeams());
     }
 }

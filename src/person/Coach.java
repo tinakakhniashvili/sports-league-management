@@ -1,6 +1,7 @@
 package person;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Coach extends Person {
 
@@ -9,31 +10,59 @@ public class Coach extends Person {
 
     public Coach(Integer id, String name, String surname, LocalDate birthDate, int experienceYears, String licenseLevel) {
         super(id, name, surname, birthDate);
+        if (experienceYears < 0) throw new IllegalArgumentException("Experience years cannot be negative");
         this.experienceYears = experienceYears;
-        this.licenseLevel = licenseLevel;
+        this.licenseLevel = Objects.requireNonNull(licenseLevel, "licenseLevel cannot be null").trim();
     }
 
-    public void trainTeam(){
-        System.out.println(fullName() + " is training the team.");
+    @Override
+    public String getRole() {
+        return "COACH";
+    }
+
+    @Override
+    public double discountRate() {
+        return 0.05;
+    }
+
+    public void trainTeam() {
+        System.out.println(String.format("%s is training the team.", fullName()));
     }
 
     public int getExperienceYears() {
         return experienceYears;
     }
+
     public void setExperienceYears(int experienceYears) {
+        if (experienceYears < 0) throw new IllegalArgumentException("Experience years cannot be negative");
         this.experienceYears = experienceYears;
     }
+
     public String getLicenseLevel() {
         return licenseLevel;
     }
+
     public void setLicenseLevel(String licenseLevel) {
-        this.licenseLevel = licenseLevel;
+        this.licenseLevel = Objects.requireNonNull(licenseLevel, "licenseLevel cannot be null").trim();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Coach)) return false;
+        if (!super.equals(o)) return false;
+        Coach coach = (Coach) o;
+        return experienceYears == coach.experienceYears && Objects.equals(licenseLevel, coach.licenseLevel);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), experienceYears, licenseLevel);
     }
 
     @Override
     public String toString() {
-        return super.toString() +
-                ", experienceYears=" + experienceYears +
-                ", licenseLevel=" + licenseLevel;
+        return String.format("%s, experienceYears=%d, licenseLevel='%s'",
+                super.toString(), experienceYears, licenseLevel);
     }
 }

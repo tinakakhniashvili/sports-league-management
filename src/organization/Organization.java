@@ -1,23 +1,25 @@
 package organization;
 
 import java.time.Year;
+import java.util.Objects;
 
-public class Organization {
+public abstract class Organization {
 
     private static final int MIN_NAME_LENGTH = 2;
 
-    private Integer id;
-    private String name;
-    private Year foundedYear;
+    protected Integer id;
+    protected String name;
+    protected Year foundedYear;
 
     static {
         System.out.println("Organization class loaded");
     }
 
     public Organization(Integer id, String name, Year foundedYear) {
-        this.id = id;
-        this.name = name;
-        this.foundedYear = foundedYear;
+        this.id = Objects.requireNonNull(id, "id cannot be null");
+        if (!isValidName(name)) throw new IllegalArgumentException("Invalid name");
+        this.name = name.trim();
+        this.foundedYear = Objects.requireNonNull(foundedYear, "foundedYear cannot be null");
     }
 
     public static boolean isValidName(String name) {
@@ -25,9 +27,7 @@ public class Organization {
     }
 
     public String summary() {
-        return "Organization: id=" + id +
-                ", name='" + name + '\'' +
-                ", foundedYear=" + foundedYear;
+        return String.format("Organization: id=%d, name='%s', foundedYear=%s", id, name, foundedYear);
     }
 
     public Integer getId() {
@@ -35,7 +35,7 @@ public class Organization {
     }
 
     public void setId(Integer id) {
-        this.id = id;
+        this.id = Objects.requireNonNull(id, "id cannot be null");
     }
 
     public String getName() {
@@ -43,7 +43,8 @@ public class Organization {
     }
 
     public void setName(String name) {
-        this.name = name;
+        if (!isValidName(name)) throw new IllegalArgumentException("Invalid name");
+        this.name = name.trim();
     }
 
     public Year getFoundedYear() {
@@ -51,7 +52,20 @@ public class Organization {
     }
 
     public void setFoundedYear(Year foundedYear) {
-        this.foundedYear = foundedYear;
+        this.foundedYear = Objects.requireNonNull(foundedYear, "foundedYear cannot be null");
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Organization)) return false;
+        Organization that = (Organization) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     @Override

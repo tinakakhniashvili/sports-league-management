@@ -1,29 +1,35 @@
 package facility;
 
-public class Facility {
+import java.math.BigDecimal;
+import java.util.Objects;
+
+public abstract class Facility {
 
     private static final int MIN_NAME_LENGTH = 3;
 
-    private Integer id;
-    private String name;
-    private String location;
+    protected Integer id;
+    protected String name;
+    protected String location;
 
     static {
         System.out.println("Facility class loaded");
     }
 
     public Facility(Integer id, String name, String location) {
-        this.id = id;
-        this.name = name;
-        this.location = location;
+        this.id = Objects.requireNonNull(id, "id cannot be null");
+        if (!isValidName(name)) throw new IllegalArgumentException("Invalid name");
+        this.name = name.trim();
+        this.location = location != null ? location.trim() : null;
     }
+
+    public abstract BigDecimal seatFeePerTicket();
 
     public static boolean isValidName(String name) {
         return name != null && name.trim().length() >= MIN_NAME_LENGTH;
     }
 
     public void open() {
-        System.out.println("Facility " + name + " at " + location + " is now open.");
+        System.out.println(String.format("Facility %s at %s is now open.", name, location));
     }
 
     public Integer getId() {
@@ -31,7 +37,7 @@ public class Facility {
     }
 
     public void setId(Integer id) {
-        this.id = id;
+        this.id = Objects.requireNonNull(id, "id cannot be null");
     }
 
     public String getName() {
@@ -39,7 +45,8 @@ public class Facility {
     }
 
     public void setName(String name) {
-        this.name = name;
+        if (!isValidName(name)) throw new IllegalArgumentException("Invalid name");
+        this.name = name.trim();
     }
 
     public String getLocation() {
@@ -47,14 +54,24 @@ public class Facility {
     }
 
     public void setLocation(String location) {
-        this.location = location;
+        this.location = location != null ? location.trim() : null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Facility)) return false;
+        Facility that = (Facility) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     @Override
     public String toString() {
-        return "Facility: " +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", location='" + location + '\'';
+        return String.format("Facility: id=%d, name='%s', location='%s'", id, name, location);
     }
 }

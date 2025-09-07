@@ -1,13 +1,16 @@
 package facility;
 
+import java.math.BigDecimal;
+import java.util.Objects;
+
 public class Stadium extends Facility {
 
     private static final int MIN_CAPACITY = 1000;
 
-    private int capacity;
+    protected int capacity;
+    protected String surfaceType;
     private float pitchSlopePercent;
     private char sectorLetter;
-    private String surfaceType;
 
     static {
         System.out.println("Stadium class loaded");
@@ -16,10 +19,17 @@ public class Stadium extends Facility {
     public Stadium(Integer id, String name, String location, int capacity, String surfaceType,
                    float pitchSlopePercent, char sectorLetter) {
         super(id, name, location);
+        if (!isValidCapacity(capacity)) throw new IllegalArgumentException("Invalid capacity");
         this.capacity = capacity;
-        this.surfaceType = surfaceType;
+        this.surfaceType = Objects.requireNonNull(surfaceType, "surfaceType cannot be null");
         this.pitchSlopePercent = pitchSlopePercent;
         this.sectorLetter = sectorLetter;
+    }
+
+    @Override
+    public BigDecimal seatFeePerTicket() {
+        boolean premiumSurface = "hybrid".equalsIgnoreCase(surfaceType) || "natural".equalsIgnoreCase(surfaceType);
+        return new BigDecimal(capacity >= 30000 || premiumSurface ? "3.50" : "3.00");
     }
 
     public static boolean isValidCapacity(int capacity) {
@@ -27,7 +37,7 @@ public class Stadium extends Facility {
     }
 
     public void hostMatch() {
-        System.out.println(getName() + " stadium is hosting a match with capacity " + capacity + ".");
+        System.out.println(String.format("%s stadium is hosting a match with capacity %d.", getName(), capacity));
     }
 
     public int getCapacity() {
@@ -36,6 +46,7 @@ public class Stadium extends Facility {
 
     public void setCapacity(int capacity) {
         this.capacity = capacity;
+        if (!isValidCapacity(capacity)) throw new IllegalArgumentException("Invalid capacity");
     }
 
     public String getSurfaceType() {
@@ -43,7 +54,7 @@ public class Stadium extends Facility {
     }
 
     public void setSurfaceType(String surfaceType) {
-        this.surfaceType = surfaceType;
+        this.surfaceType = Objects.requireNonNull(surfaceType, "surfaceType cannot be null");
     }
 
     public float getPitchSlopePercent() {
@@ -63,11 +74,22 @@ public class Stadium extends Facility {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Stadium)) return false;
+        if (!super.equals(o)) return false;
+        Stadium stadium = (Stadium) o;
+        return capacity == stadium.capacity && Objects.equals(surfaceType, stadium.surfaceType);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), capacity, surfaceType);
+    }
+
+    @Override
     public String toString() {
-        return super.toString() +
-                ", capacity=" + capacity +
-                ", surfaceType='" + surfaceType + '\'' +
-                ", pitchSlopePercent=" + pitchSlopePercent +
-                ", sectorLetter=" + sectorLetter;
+        return String.format("%s, capacity=%d, surfaceType='%s', pitchSlopePercent=%.2f, sectorLetter=%c",
+                super.toString(), capacity, surfaceType, pitchSlopePercent, sectorLetter);
     }
 }
