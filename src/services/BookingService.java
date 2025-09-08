@@ -5,17 +5,27 @@ import event.Match;
 import facility.Stadium;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class BookingService {
 
     private static final BigDecimal BASE_TICKET_PRICE = new BigDecimal("20.00");
-    private final List<Event> events = new ArrayList<>();
+    private Event[] events;
+    private int eventCount;
+    private static final int INITIAL_CAPACITY = 10;
+
+    public BookingService() {
+        events = new Event[INITIAL_CAPACITY];
+        eventCount = 0;
+    }
 
     public void addEvent(Event event) {
-        events.add(Objects.requireNonNull(event, "event cannot be null"));
+        Objects.requireNonNull(event, "event cannot be null");
+        if (eventCount >= events.length) {
+            events = Arrays.copyOf(events, events.length * 2);
+        }
+        events[eventCount++] = event;
     }
 
     public BigDecimal calculateTicketPrice(BigDecimal multiplier) {
@@ -49,11 +59,11 @@ public class BookingService {
         System.out.println(String.format("Ticket price: $%.2f", ticketPrice));
         System.out.println(String.format("Projected revenue: $%.2f", revenue));
         System.out.println("Email sent to organizer");
-        events.add(event);
+        addEvent(event);
         return true;
     }
 
-    public List<Event> getBookedEvents() {
-        return new ArrayList<>(events);
+    public Event[] getBookedEvents() {
+        return Arrays.copyOf(events, eventCount);
     }
 }
