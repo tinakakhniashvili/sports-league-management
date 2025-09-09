@@ -22,7 +22,7 @@ public abstract class Facility {
         this.location = location != null ? location.trim() : null;
     }
 
-    public abstract BigDecimal seatFeePerTicket();
+    public abstract BigDecimal getSeatFeePerTicket();
 
     public static boolean isValidName(String name) {
         return name != null && name.trim().length() >= MIN_NAME_LENGTH;

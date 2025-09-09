@@ -22,7 +22,7 @@ public class TrainingGround extends Facility {
     }
 
     @Override
-    public BigDecimal seatFeePerTicket() {
+    public BigDecimal getSeatFeePerTicket() {
         return new BigDecimal(indoor ? "1.50" : "1.00");
     }
 

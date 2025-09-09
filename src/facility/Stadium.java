@@ -27,7 +27,7 @@ public class Stadium extends Facility {
     }
 
     @Override
-    public BigDecimal seatFeePerTicket() {
+    public BigDecimal getSeatFeePerTicket() {
         boolean premiumSurface = "hybrid".equalsIgnoreCase(surfaceType) || "natural".equalsIgnoreCase(surfaceType);
         return new BigDecimal(capacity >= 30000 || premiumSurface ? "3.50" : "3.00");
     }

@@ -32,11 +32,11 @@ public abstract class Person {
     }
 
     public String fullName() {
-        return String.format("%s %s", name, surname); // Used String.format for readability
+        return String.format("%s %s", name, surname);
     }
 
     public int getAge() {
-        return LocalDate.now().getYear() - birthDate.getYear(); // Simplified; assumes approximate age
+        return LocalDate.now().getYear() - birthDate.getYear();
     }
 
     public Integer getId() {
@@ -44,7 +44,7 @@ public abstract class Person {
     }
 
     public void setId(Integer id) {
-        this.id = Objects.requireNonNull(id, "id cannot be null"); // Added null check
+        this.id = Objects.requireNonNull(id, "id cannot be null");
     }
 
     public String getName() {
@@ -52,7 +52,7 @@ public abstract class Person {
     }
 
     public void setName(String name) {
-        this.name = Objects.requireNonNull(name, "name cannot be null").trim(); // Added null check and trim
+        this.name = Objects.requireNonNull(name, "name cannot be null").trim();
     }
 
     public String getSurname() {
@@ -60,7 +60,7 @@ public abstract class Person {
     }
 
     public void setSurname(String surname) {
-        this.surname = Objects.requireNonNull(surname, "surname cannot be null").trim(); // Added null check and trim
+        this.surname = Objects.requireNonNull(surname, "surname cannot be null").trim();
     }
 
     public LocalDate getBirthDate() {
@@ -68,8 +68,8 @@ public abstract class Person {
     }
 
     public void setBirthDate(LocalDate birthDate) {
-        this.birthDate = Objects.requireNonNull(birthDate, "birthDate cannot be null"); // Added null check
-        if (!isValidAge(getAge())) throw new IllegalArgumentException("Person must be at least 18"); // Added validation
+        this.birthDate = Objects.requireNonNull(birthDate, "birthDate cannot be null");
+        if (!isValidAge(getAge())) throw new IllegalArgumentException("Person must be at least 18");
     }
 
     @Override
