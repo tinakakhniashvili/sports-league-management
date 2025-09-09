@@ -33,7 +33,7 @@ public class League extends Organization {
         return count > 1 && count <= MAX_TEAMS;
     }
 
-    public void scheduleSeason() {
+    protected void scheduleSeason() {
         System.out.println(String.format("Scheduling %s league %s for %s with %d teams.",
                 sportType, seasonYear, getName(), getNumberOfTeams()));
     }
@@ -59,7 +59,7 @@ public class League extends Organization {
         return seasonYear;
     }
 
-    public void setSeasonYear(Year seasonYear) {
+    protected void setSeasonYear(Year seasonYear) {
         this.seasonYear = Objects.requireNonNull(seasonYear, "seasonYear cannot be null");
     }
 
@@ -75,7 +75,7 @@ public class League extends Organization {
         return Arrays.copyOf(teams, teams.length);
     }
 
-    public void setTeams(Team[] teams) {
+    protected void setTeams(Team[] teams) {
         if (teams != null && !isValidTeamCount(teams.length)) {
             throw new IllegalArgumentException("Invalid team count");
         }

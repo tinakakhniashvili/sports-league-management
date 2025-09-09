@@ -27,15 +27,15 @@ public abstract class Event {
 
     public abstract BigDecimal priceMultiplier();
 
-    public void startEvent() {
+    protected void startEvent() {
         System.out.println("Starting event: " + this);
     }
 
-    public void reschedule(LocalDateTime when) {
+    protected void reschedule(LocalDateTime when) {
         this.dateTime = Objects.requireNonNull(when, "datetime cannot be null");
     }
 
-    public void updateDescription(String text) {
+    protected void updateDescription(String text) {
         this.description = text != null ? text.trim() : DEFAULT_DESCRIPTION;
     }
 

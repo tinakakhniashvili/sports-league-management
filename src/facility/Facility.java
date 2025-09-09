@@ -36,7 +36,7 @@ public abstract class Facility {
         return id;
     }
 
-    public void setId(Integer id) {
+    protected void setId(Integer id) {
         this.id = Objects.requireNonNull(id, "id cannot be null");
     }
 
@@ -44,7 +44,7 @@ public abstract class Facility {
         return name;
     }
 
-    public void setName(String name) {
+    protected void setName(String name) {
         if (!isValidName(name)) throw new IllegalArgumentException("Invalid name");
         this.name = name.trim();
     }
@@ -53,7 +53,7 @@ public abstract class Facility {
         return location;
     }
 
-    public void setLocation(String location) {
+    protected void setLocation(String location) {
         this.location = location != null ? location.trim() : null;
     }
 

@@ -43,7 +43,7 @@ public abstract class Person {
         return id;
     }
 
-    public void setId(Integer id) {
+    protected void setId(Integer id) {
         this.id = Objects.requireNonNull(id, "id cannot be null");
     }
 
@@ -51,7 +51,7 @@ public abstract class Person {
         return name;
     }
 
-    public void setName(String name) {
+    protected void setName(String name) {
         this.name = Objects.requireNonNull(name, "name cannot be null").trim();
     }
 
@@ -67,7 +67,7 @@ public abstract class Person {
         return birthDate;
     }
 
-    public void setBirthDate(LocalDate birthDate) {
+    protected void setBirthDate(LocalDate birthDate) {
         this.birthDate = Objects.requireNonNull(birthDate, "birthDate cannot be null");
         if (!isValidAge(getAge())) throw new IllegalArgumentException("Person must be at least 18");
     }
