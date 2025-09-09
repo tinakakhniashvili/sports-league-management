@@ -12,8 +12,8 @@ public class League extends Organization {
     private static final int MAX_TEAMS = 50;
     public static final BigDecimal TAX_RATE;
 
-    protected String sportType;
-    protected Year seasonYear;
+    private String sportType;
+    private Year seasonYear;
     private LocalDate seasonStartDate;
     private Team[] teams;
 

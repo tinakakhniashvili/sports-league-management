@@ -7,9 +7,9 @@ public abstract class Facility {
 
     private static final int MIN_NAME_LENGTH = 3;
 
-    protected Integer id;
-    protected String name;
-    protected String location;
+    private Integer id;
+    private String name;
+    private String location;
 
     static {
         System.out.println("Facility class loaded");

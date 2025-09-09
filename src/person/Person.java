@@ -7,10 +7,10 @@ public abstract class Person {
 
     private static final int MIN_AGE = 18;
 
-    protected Integer id;
-    protected String name;
-    protected String surname;
-    protected LocalDate birthDate;
+    private Integer id;
+    private String name;
+    private String surname;
+    private LocalDate birthDate;
 
     static {
         System.out.println("Person class loaded");

@@ -7,8 +7,8 @@ public class Stadium extends Facility {
 
     private static final int MIN_CAPACITY = 1000;
 
-    protected int capacity;
-    protected String surfaceType;
+    private int capacity;
+    private String surfaceType;
     private float pitchSlopePercent;
     private char sectorLetter;
 

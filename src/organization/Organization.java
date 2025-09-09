@@ -7,9 +7,9 @@ public abstract class Organization {
 
     private static final int MIN_NAME_LENGTH = 2;
 
-    protected Integer id;
-    protected String name;
-    protected Year foundedYear;
+    private Integer id;
+    private String name;
+    private Year foundedYear;
 
     static {
         System.out.println("Organization class loaded");

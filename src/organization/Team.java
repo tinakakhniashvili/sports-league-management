@@ -10,8 +10,8 @@ public class Team extends Organization {
 
     private static final int MAX_PLAYERS = 30;
 
-    protected String city;
-    protected Division division;
+    private String city;
+    private Division division;
     private Coach headCoach;
     private Player[] roster;
     private int disciplinaryPoints;

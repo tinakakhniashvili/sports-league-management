@@ -10,9 +10,9 @@ public class Match extends Event {
 
     private static final int MAX_SCORE = 99;
 
-    protected final String homeTeam;
-    protected final String awayTeam;
-    protected String stadiumName;
+    private final String homeTeam;
+    private final String awayTeam;
+    private String stadiumName;
     private int homeScore;
     private int awayScore;
     private long expectedAttendance;

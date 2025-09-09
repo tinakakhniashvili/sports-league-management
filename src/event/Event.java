@@ -9,8 +9,8 @@ public abstract class Event {
     private static final String DEFAULT_DESCRIPTION = "No description";
 
     private final Integer id;
-    protected LocalDateTime dateTime;
-    protected String description = DEFAULT_DESCRIPTION;
+    private LocalDateTime dateTime;
+    private String description = DEFAULT_DESCRIPTION;
 
     static {
         System.out.println("Event class loaded");

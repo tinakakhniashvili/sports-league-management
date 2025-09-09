@@ -8,8 +8,8 @@ public class Schedule extends Event {
 
     private static final int MAX_ROUNDS = 50;
 
-    protected String leagueName;
-    protected int roundNumber;
+    private String leagueName;
+    private int roundNumber;
     private LocalDate roundDate;
     private long spectatorsExpected;
 
