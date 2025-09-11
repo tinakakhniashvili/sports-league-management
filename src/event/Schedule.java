@@ -1,7 +1,12 @@
 package event;
 
+import contracts.Schedulable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Schedule extends Event {
@@ -12,6 +17,8 @@ public class Schedule extends Event {
     private int roundNumber;
     private LocalDate roundDate;
     private long spectatorsExpected;
+
+    private final List<Schedulable> items = new ArrayList<>();
 
     static {
         System.out.println("Schedule class loaded");
@@ -36,6 +43,32 @@ public class Schedule extends Event {
     public void publish() {
         System.out.println(String.format("Publishing schedule for %s, round %d on %s with expected spectators: %d",
                 leagueName, roundNumber, roundDate, spectatorsExpected));
+    }
+
+    public void add(Schedulable item) {
+        items.add(Objects.requireNonNull(item, "item cannot be null"));
+    }
+
+    public void addAll(List<? extends Schedulable> schedulables) {
+        if (schedulables == null) return;
+        for (Schedulable s : schedulables) add(s);
+    }
+
+    public List<Schedulable> getItems() {
+        return List.copyOf(items);
+    }
+
+    public void printAgenda() {
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        for (Schedulable s : items) {
+            LocalDateTime start = s.getStartTime();
+            LocalDateTime end = s.getEndTime();
+            String title = s.getTitle();
+            System.out.printf("%s  %s—%s%n",
+                    title,
+                    start != null ? start.format(fmt) : "N/A",
+                    end != null ? end.format(fmt) : "N/A");
+        }
     }
 
     public String getLeagueName() {

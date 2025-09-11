@@ -6,7 +6,6 @@ import person.*;
 import event.*;
 import services.BookingService;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Year;
 
 public class Main {
@@ -27,24 +26,27 @@ public class Main {
         booking.addEvent(match);
 
         schedule.publish();
-        match.startEvent();
         match.play();
-        booking.book(match, stadium, 18000);
-        booking.book(schedule, stadium, 18000);
-        coach.trainTeam();
+
+        booking.book(match, stadium, coach, 18000);
+        booking.book(schedule, stadium, coach, 18000);
+
+        coach.train();
+        teams[0].groupTraining();
+
         players[0].scoreGoal();
         officials[0].officiateMatch();
         teams[0].playMatch();
-        stadium.hostMatch();
-        training.conductTraining();
-        league.scheduleSeason();
+
+        stadium.open();
+        training.open();
 
         System.out.println("\n=== System Details ===");
         System.out.println(teams[0]);
         System.out.println(teams[1]);
         System.out.println(league);
         System.out.println(match);
-        System.out.println("Booked events: " + booking.getBookedEvents());
+        System.out.println("Booked events: " + booking.getBookedEvents().length);
     }
 
     private static Coach createCoach() {
@@ -72,7 +74,10 @@ public class Main {
         teamA.setDivision(Team.Division.EAST);
         for (Player p : players) {
             teamA.addPlayer(p);
+            teamA.addMember(p);
         }
+        teamA.addMember(coach);
+
         Team teamB = new Team(102, "Blue Bears", Year.of(2010), "Batumi");
         teamB.setDivision(Team.Division.WEST);
         return new Team[] { teamA, teamB };
@@ -81,7 +86,6 @@ public class Main {
     private static League createLeague(Team[] teams) {
         League league = new League(1000, "National Premier League", Year.of(1998), "Football", Year.of(2025));
         league.setSeasonStartDate(LocalDate.of(2025, 8, 15));
-        league.setTeams(teams);
         return league;
     }
 
@@ -107,8 +111,7 @@ public class Main {
         match.setOfficials(officials);
         match.setHomeSquad(players);
         match.setAwaySquad(new Player[0]);
-        match.reschedule(LocalDateTime.of(2025, 8, 15, 19, 30));
-        match.updateDescription("League opener");
+        match.setTitle("League opener");
         return match;
     }
 }

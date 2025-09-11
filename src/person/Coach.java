@@ -1,18 +1,24 @@
 package person;
 
+import contracts.Payable;
+import contracts.Trainable;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class Coach extends Person {
+public class Coach extends Person implements Payable, Trainable {
 
     private int experienceYears;
     private String licenseLevel;
 
-    public Coach(Integer id, String name, String surname, LocalDate birthDate, int experienceYears, String licenseLevel) {
+    private double salary;
+
+    public Coach(Integer id, String name, String surname, LocalDate birthDate,
+                 int experienceYears, String licenseLevel) {
         super(id, name, surname, birthDate);
         if (experienceYears < 0) throw new IllegalArgumentException("Experience years cannot be negative");
         this.experienceYears = experienceYears;
         this.licenseLevel = Objects.requireNonNull(licenseLevel, "licenseLevel cannot be null").trim();
+        this.salary = 0.0;
     }
 
     @Override
@@ -27,6 +33,26 @@ public class Coach extends Person {
 
     public void trainTeam() {
         System.out.println(String.format("%s is training the team.", fullName()));
+    }
+
+    @Override
+    public double getSalary() {
+        return salary;
+    }
+
+    @Override
+    public void pay(double amount) {
+        System.out.printf("Paid %.2f to coach %s%n", amount, fullName());
+    }
+
+    public void setSalary(double salary) {
+        if (salary < 0) throw new IllegalArgumentException("salary < 0");
+        this.salary = salary;
+    }
+
+    @Override
+    public void train() {
+        System.out.printf("Coach %s conducts a training session%n", fullName());
     }
 
     public int getExperienceYears() {

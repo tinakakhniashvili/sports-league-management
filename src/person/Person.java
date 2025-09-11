@@ -1,9 +1,10 @@
 package person;
 
+import contracts.Identifiable;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public abstract class Person {
+public abstract class Person implements Identifiable {
 
     private static final int MIN_AGE = 18;
 
@@ -39,8 +40,13 @@ public abstract class Person {
         return LocalDate.now().getYear() - birthDate.getYear();
     }
 
-    public Integer getId() {
+    public Integer getIdNumber() {
         return id;
+    }
+
+    @Override
+    public String getId() {
+        return String.valueOf(id);
     }
 
     protected void setId(Integer id) {

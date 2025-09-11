@@ -1,8 +1,10 @@
 package services;
 
+import contracts.Bookable;
 import event.Event;
 import event.Match;
 import facility.Stadium;
+import person.Person;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
@@ -33,15 +35,18 @@ public class BookingService {
                 .setScale(2, RoundingMode.HALF_UP);
     }
 
-    public boolean book(Event event, Stadium stadium, int expectedAttendance) {
-        if (event == null || stadium == null) {
-            System.out.println("Booking failed: Invalid event or stadium");
+    public boolean book(Event event, Bookable facility, Person organizer, int expectedAttendance) {
+
+        if (event == null || facility == null || organizer == null) {
+            System.out.println("Booking failed: Invalid event, facility, or organizer");
             return false;
         }
-        if (expectedAttendance <= 0 || expectedAttendance > stadium.getCapacity()) {
+
+        if (!validateAttendanceFor(facility, expectedAttendance)) {
             System.out.println("Booking failed: Invalid attendance");
             return false;
         }
+
         if (event instanceof Match match) {
             if (match.getExpectedAttendance() > 0 && match.getExpectedAttendance() != expectedAttendance) {
                 System.out.println("Booking failed: Attendance mismatch");
@@ -49,12 +54,24 @@ public class BookingService {
             }
             match.setExpectedAttendance(expectedAttendance);
         }
+
         BigDecimal ticketPrice = calculateTicketPrice(event.priceMultiplier());
         BigDecimal revenue = ticketPrice.multiply(BigDecimal.valueOf(expectedAttendance));
-        String eventDescription = event instanceof Match match
+
+        String facilityName = (facility instanceof Stadium s) ? s.getName() : facility.getClass().getSimpleName();
+
+        String eventDescription = (event instanceof Match match)
                 ? String.format("%s vs %s", match.getHomeTeam(), match.getAwayTeam())
                 : event.getDescription();
-        System.out.println(String.format("Booking confirmed for %s at %s", eventDescription, stadium.getName()));
+
+        if (!facility.isAvailable()) {
+            System.out.println("Booking failed: Facility is not available");
+            return false;
+        }
+        facility.book(organizer);
+
+        System.out.println(String.format("Booking confirmed for %s at %s", eventDescription, facilityName));
+        System.out.println(String.format("Organizer: %s", organizer.fullName()));
         System.out.println(String.format("Expected attendance: %d", expectedAttendance));
         System.out.println(String.format("Ticket price: $%.2f", ticketPrice));
         System.out.println(String.format("Projected revenue: $%.2f", revenue));
@@ -65,5 +82,14 @@ public class BookingService {
 
     public Event[] getBookedEvents() {
         return Arrays.copyOf(events, eventCount);
+    }
+
+    private boolean validateAttendanceFor(Bookable facility, int expectedAttendance) {
+        if (expectedAttendance <= 0) return false;
+        if (facility instanceof Stadium s) {
+            return expectedAttendance <= s.getCapacity();
+        }
+
+        return true;
     }
 }

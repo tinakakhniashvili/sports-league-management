@@ -1,15 +1,22 @@
 package facility;
 
+import contracts.Bookable;
+import contracts.Identifiable;
+import person.Person;
+
 import java.math.BigDecimal;
 import java.util.Objects;
 
-public abstract class Facility {
+public abstract class Facility implements Bookable, Identifiable {
 
     private static final int MIN_NAME_LENGTH = 3;
 
     private Integer id;
     private String name;
     private String location;
+
+    private boolean available = true;
+    private Person bookedBy;
 
     static {
         System.out.println("Facility class loaded");
@@ -32,16 +39,21 @@ public abstract class Facility {
         System.out.println(String.format("Facility %s at %s is now open.", name, location));
     }
 
-    public Integer getId() {
+    public Integer getIdNumber() {
         return id;
     }
 
-    protected void setId(Integer id) {
-        this.id = Objects.requireNonNull(id, "id cannot be null");
+    @Override
+    public String getId() {
+        return String.valueOf(id);
     }
 
     public String getName() {
         return name;
+    }
+
+    protected void setId(Integer id) {
+        this.id = Objects.requireNonNull(id, "id cannot be null");
     }
 
     protected void setName(String name) {
@@ -55,6 +67,28 @@ public abstract class Facility {
 
     protected void setLocation(String location) {
         this.location = location != null ? location.trim() : null;
+    }
+
+    @Override
+    public boolean isAvailable() {
+        return available;
+    }
+
+    @Override
+    public void book(Person by) {
+        if (!available) throw new IllegalStateException("Already booked");
+        this.available = false;
+        this.bookedBy = Objects.requireNonNull(by, "by cannot be null");
+    }
+
+    @Override
+    public void cancel() {
+        this.available = true;
+        this.bookedBy = null;
+    }
+
+    public Person getBookedBy() {
+        return bookedBy;
     }
 
     @Override

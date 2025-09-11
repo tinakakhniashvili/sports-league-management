@@ -1,8 +1,11 @@
 package organization;
 
+import contracts.Trainable;
 import person.Coach;
 import person.Player;
 import java.time.Year;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -14,6 +17,9 @@ public class Team extends Organization {
     private Division division;
     private Coach headCoach;
     private Player[] roster;
+
+    private final List<Trainable> members = new ArrayList<>();
+
     private int disciplinaryPoints;
 
     static {
@@ -44,6 +50,20 @@ public class Team extends Organization {
         System.arraycopy(roster, 0, next, 0, roster.length);
         next[roster.length] = player;
         roster = Arrays.copyOf(next, next.length);
+    }
+
+    public void addMember(Trainable t) {
+        if (t != null) members.add(t);
+    }
+
+    public List<Trainable> getMembers() {
+        return List.copyOf(members);
+    }
+
+    public void groupTraining() {
+        for (Trainable t : members) {
+            t.train();
+        }
     }
 
     public void addDisciplinaryPoints(int delta) {

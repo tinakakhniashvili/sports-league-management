@@ -1,6 +1,8 @@
 package organization;
 
+import contracts.Payable;
 import java.time.Year;
+import java.util.Collection;
 import java.util.Objects;
 
 public abstract class Organization {
@@ -53,6 +55,14 @@ public abstract class Organization {
 
     public void setFoundedYear(Year foundedYear) {
         this.foundedYear = Objects.requireNonNull(foundedYear, "foundedYear cannot be null");
+    }
+
+    public void runPayroll(Collection<? extends Payable> staff) {
+        if (staff == null) return;
+        for (Payable p : staff) {
+            double salary = p.getSalary();
+            p.pay(salary);
+        }
     }
 
     @Override

@@ -1,20 +1,26 @@
 package person;
 
+import contracts.Payable;
+import contracts.Trainable;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class Player extends Person {
+public class Player extends Person implements Payable, Trainable {
 
     protected String position;
     private int jerseyNumber;
     private boolean isCaptain;
 
-    public Player(Integer id, String name, String surname, LocalDate birthDate, String position, int jerseyNumber, boolean isCaptain) {
+    private double salary;
+
+    public Player(Integer id, String name, String surname, LocalDate birthDate,
+                  String position, int jerseyNumber, boolean isCaptain) {
         super(id, name, surname, birthDate);
         this.position = Objects.requireNonNull(position, "position cannot be null").trim();
         if (jerseyNumber <= 0) throw new IllegalArgumentException("Jersey number must be positive");
         this.jerseyNumber = jerseyNumber;
         this.isCaptain = isCaptain;
+        this.salary = 0.0;
     }
 
     @Override
@@ -33,6 +39,27 @@ public class Player extends Person {
 
     public boolean isEligibleToPlay() {
         return isValidAge(getAge());
+    }
+
+    @Override
+    public double getSalary() {
+        return salary;
+    }
+
+    @Override
+    public void pay(double amount) {
+        // here you could accumulate payments, write a ledger, etc.
+        System.out.printf("Paid %.2f to player %s%n", amount, fullName());
+    }
+
+    public void setSalary(double salary) {
+        if (salary < 0) throw new IllegalArgumentException("salary < 0");
+        this.salary = salary;
+    }
+
+    @Override
+    public void train() {
+        System.out.printf("Player %s is training%n", fullName());
     }
 
     public String getPosition() {
