@@ -41,6 +41,10 @@ public class Main {
         stadium.open();
         training.open();
 
+        teams[0].printTeamInfo();
+        int generatedId = IdGenerator.nextId();
+        System.out.println("Generated id: " + generatedId);
+
         System.out.println("\n=== System Details ===");
         System.out.println(teams[0]);
         System.out.println(teams[1]);

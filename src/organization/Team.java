@@ -43,6 +43,11 @@ public class Team extends Organization {
                 getName(), city, getPlayersCount()));
     }
 
+    public final void printTeamInfo()
+    {
+        System.out.println(this.toString());
+    }
+
     public void addPlayer(Player player) {
         if (player == null) return;
         if (roster.length >= MAX_PLAYERS) throw new IllegalStateException("Roster full");
