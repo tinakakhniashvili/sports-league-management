@@ -3,6 +3,7 @@ package organization;
 import contracts.Trainable;
 import person.Coach;
 import person.Player;
+import exception.PlayerNotEligibleException;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,13 +13,12 @@ import java.util.Objects;
 public class Team extends Organization {
 
     private static final int MAX_PLAYERS = 30;
+    private final List<Trainable> members = new ArrayList<>();
 
     private String city;
     private Division division;
     private Coach headCoach;
     private Player[] roster;
-
-    private final List<Trainable> members = new ArrayList<>();
 
     private int disciplinaryPoints;
 
@@ -43,14 +43,19 @@ public class Team extends Organization {
                 getName(), city, getPlayersCount()));
     }
 
-    public final void printTeamInfo()
-    {
+    public final void printTeamInfo() {
         System.out.println(this.toString());
     }
 
     public void addPlayer(Player player) {
-        if (player == null) return;
-        if (roster.length >= MAX_PLAYERS) throw new IllegalStateException("Roster full");
+        if (player == null) throw new PlayerNotEligibleException("Null player.");
+        if (!player.isEligibleToPlay()) throw new PlayerNotEligibleException("Player not eligible to play: " + player.fullName());
+        if (roster.length >= MAX_PLAYERS) throw new PlayerNotEligibleException("Roster full (" + MAX_PLAYERS + ").");
+        for (Player p : roster) {
+            if (p.equals(player) || p.getJerseyNumber() == player.getJerseyNumber()) {
+                throw new PlayerNotEligibleException("Duplicate player/jersey: " + player.fullName());
+            }
+        }
         Player[] next = new Player[roster.length + 1];
         System.arraycopy(roster, 0, next, 0, roster.length);
         next[roster.length] = player;
@@ -97,7 +102,7 @@ public class Team extends Organization {
 
     public void setRoster(Player[] roster) {
         if (roster != null && !isValidPlayersCount(roster.length)) {
-            throw new IllegalArgumentException("Invalid player count");
+            throw new PlayerNotEligibleException("Invalid player count");
         }
         this.roster = roster != null ? Arrays.copyOf(roster, roster.length) : new Player[0];
     }

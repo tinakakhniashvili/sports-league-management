@@ -1,5 +1,6 @@
 package app;
 
+import exception.OverbookingException;
 import facility.*;
 import organization.*;
 import person.*;
@@ -7,6 +8,7 @@ import event.*;
 import services.BookingService;
 import java.time.LocalDate;
 import java.time.Year;
+import exception.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -28,8 +30,23 @@ public class Main {
         schedule.publish();
         match.play();
 
-        booking.book(match, stadium, coach, 18000);
-        booking.book(schedule, stadium, coach, 18000);
+        try {
+            booking.book(match, stadium, coach, 18000);
+        } catch (OverbookingException e) {
+            System.err.println("Could not book match: " + e.getMessage());
+        } catch (RuntimeException e) {
+            System.err.println("Booking failed: " + e.getMessage());
+        }
+
+        stadium.cancel();
+
+        try {
+            booking.book(schedule, stadium, coach, 18000);
+        } catch (OverbookingException e) {
+            System.err.println("Could not book schedule: " + e.getMessage());
+        } catch (RuntimeException e) {
+            System.err.println("Booking failed: " + e.getMessage());
+        }
 
         coach.train();
         teams[0].groupTraining();

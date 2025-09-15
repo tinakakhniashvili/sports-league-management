@@ -2,8 +2,8 @@ package facility;
 
 import contracts.Bookable;
 import contracts.Identifiable;
+import exception.FacilityUnavailableException;
 import person.Person;
-
 import java.math.BigDecimal;
 import java.util.Objects;
 
@@ -76,7 +76,7 @@ public abstract class Facility implements Bookable, Identifiable {
 
     @Override
     public void book(Person by) {
-        if (!available) throw new IllegalStateException("Already booked");
+        if (!available) throw new FacilityUnavailableException("Already booked");
         this.available = false;
         this.bookedBy = Objects.requireNonNull(by, "by cannot be null");
     }

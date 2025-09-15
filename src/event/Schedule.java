@@ -1,6 +1,7 @@
 package event;
 
 import contracts.Schedulable;
+import exception.ScheduleConflictException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -12,13 +13,12 @@ import java.util.Objects;
 public class Schedule extends Event {
 
     private static final int MAX_ROUNDS = 50;
+    private final List<Schedulable> items = new ArrayList<>();
 
     private String leagueName;
     private int roundNumber;
     private LocalDate roundDate;
     private long spectatorsExpected;
-
-    private final List<Schedulable> items = new ArrayList<>();
 
     static {
         System.out.println("Schedule class loaded");
@@ -46,7 +46,13 @@ public class Schedule extends Event {
     }
 
     public void add(Schedulable item) {
-        items.add(Objects.requireNonNull(item, "item cannot be null"));
+        Objects.requireNonNull(item, "item cannot be null");
+        for (Schedulable ex : items) {
+            if (overlaps(ex, item)) {
+                throw new ScheduleConflictException("Schedule conflict: '" + ex.getTitle() + "' overlaps '" + item.getTitle() + "'");
+            }
+        }
+        items.add(item);
     }
 
     public void addAll(List<? extends Schedulable> schedulables) {
@@ -69,6 +75,13 @@ public class Schedule extends Event {
                     start != null ? start.format(fmt) : "N/A",
                     end != null ? end.format(fmt) : "N/A");
         }
+    }
+
+    private boolean overlaps(Schedulable a, Schedulable b) {
+        LocalDateTime aStart = a.getStartTime(), aEnd = a.getEndTime();
+        LocalDateTime bStart = b.getStartTime(), bEnd = b.getEndTime();
+        if (aStart == null || aEnd == null || bStart == null || bEnd == null) return false;
+        return aStart.isBefore(bEnd) && bStart.isBefore(aEnd);
     }
 
     public String getLeagueName() {

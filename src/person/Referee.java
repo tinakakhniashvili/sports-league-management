@@ -1,6 +1,7 @@
 package person;
 
 import contracts.Payable;
+import exception.InvalidIdException;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -8,13 +9,12 @@ public class Referee extends Person implements Payable {
 
     private String certificationLevel;
     private int matchesOfficiated;
-
     private double matchFee;
 
     public Referee(Integer id, String name, String surname, LocalDate birthDate,
                    String certificationLevel, int matchesOfficiated) {
         super(id, name, surname, birthDate);
-        this.certificationLevel = Objects.requireNonNull(certificationLevel, "certificationLevel cannot be null").trim();
+        setCertificationLevel(certificationLevel);
         if (matchesOfficiated < 0) throw new IllegalArgumentException("Matches officiated cannot be negative");
         this.matchesOfficiated = matchesOfficiated;
         this.matchFee = 0.0;
@@ -54,7 +54,14 @@ public class Referee extends Person implements Payable {
     }
 
     public void setCertificationLevel(String certificationLevel) {
-        this.certificationLevel = Objects.requireNonNull(certificationLevel, "certificationLevel cannot be null").trim();
+        if (certificationLevel == null || certificationLevel.isBlank()) {
+            throw new InvalidIdException("Referee certification cannot be blank.");
+        }
+        String cl = certificationLevel.trim();
+        if (!cl.matches("(FIFA|UEFA)\\s+.*")) {
+            throw new InvalidIdException("Invalid certification level: " + cl);
+        }
+        this.certificationLevel = cl;
     }
 
     public int getMatchesOfficiated() {
