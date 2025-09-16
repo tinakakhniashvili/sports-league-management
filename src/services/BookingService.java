@@ -7,15 +7,20 @@ import exception.FacilityUnavailableException;
 import exception.OverbookingException;
 import facility.Stadium;
 import person.Person;
+
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class BookingService {
 
     private static final BigDecimal BASE_TICKET_PRICE = new BigDecimal("20.00");
     private static final int INITIAL_CAPACITY = 10;
+
+    private final ReentrantLock lock = new ReentrantLock();
 
     private Event[] events;
     private int eventCount;
@@ -34,11 +39,14 @@ public class BookingService {
     }
 
     public BigDecimal calculateTicketPrice(BigDecimal multiplier) {
-        return BASE_TICKET_PRICE.multiply(Objects.requireNonNull(multiplier, "multiplier cannot be null"))
+        return BASE_TICKET_PRICE
+                .multiply(Objects.requireNonNull(multiplier, "multiplier cannot be null"))
                 .setScale(2, RoundingMode.HALF_UP);
     }
 
-    public void book(Event event, Bookable facility, Person organizer, int expectedAttendance) throws OverbookingException {
+    public void book(Event event, Bookable facility, Person organizer, int expectedAttendance)
+            throws OverbookingException {
+
         if (event == null || facility == null || organizer == null) {
             throw new IllegalArgumentException("Invalid event, facility, or organizer");
         }
@@ -50,7 +58,8 @@ public class BookingService {
         }
         if (facility instanceof Stadium s) {
             if (expectedAttendance > s.getCapacity()) {
-                throw new OverbookingException("Expected " + expectedAttendance + " exceeds capacity " + s.getCapacity());
+                throw new OverbookingException(
+                        "Expected " + expectedAttendance + " exceeds capacity " + s.getCapacity());
             }
         }
         if (event instanceof Match match) {
@@ -60,24 +69,37 @@ public class BookingService {
             }
             match.setExpectedAttendance(expectedAttendance);
         }
+
         BigDecimal ticketPrice = calculateTicketPrice(event.priceMultiplier());
         BigDecimal revenue = ticketPrice.multiply(BigDecimal.valueOf(expectedAttendance));
-        String facilityName = (facility instanceof Stadium s) ? s.getName() : facility.getClass().getSimpleName();
+        String facilityName = (facility instanceof Stadium s) ? s.getName()
+                : facility.getClass().getSimpleName();
         String eventDescription = (event instanceof Match match)
                 ? String.format("%s vs %s", match.getHomeTeam(), match.getAwayTeam())
                 : event.getDescription();
-        try (BookingLog log = new BookingLog("bookings.log")) {
-            facility.book(organizer);
-            addEvent(event);
-            log.info("Booked " + eventDescription + " at " + facilityName + " | expected=" + expectedAttendance + " | ticket=" + ticketPrice + " | revenue=" + revenue);
-            System.out.println(String.format("Booking confirmed for %s at %s", eventDescription, facilityName));
-            System.out.println(String.format("Organizer: %s", organizer.fullName()));
-            System.out.println(String.format("Expected attendance: %d", expectedAttendance));
-            System.out.println(String.format("Ticket price: $%.2f", ticketPrice));
-            System.out.println(String.format("Projected revenue: $%.2f", revenue));
-            System.out.println("Email sent to organizer");
-        } catch (java.io.IOException ioe) {
-            throw new RuntimeException("Failed to write booking log.", ioe);
+
+        lock.lock();
+        try {
+            try (BookingLog log = new BookingLog("bookings.log")) {
+                facility.book(organizer);
+                addEvent(event);
+
+                log.info("Booked " + eventDescription + " at " + facilityName
+                        + " | expected=" + expectedAttendance
+                        + " | ticket=" + ticketPrice
+                        + " | revenue=" + revenue);
+
+                System.out.println("Booking confirmed for " + eventDescription + " at " + facilityName);
+                System.out.println("Organizer: " + organizer.fullName());
+                System.out.println("Expected attendance: " + expectedAttendance);
+                System.out.println("Ticket price: $" + ticketPrice);
+                System.out.println("Projected revenue: $" + revenue);
+                System.out.println("Email sent to organizer");
+            } catch (IOException ioe) {
+                throw new RuntimeException("Failed to write booking log.", ioe);
+            }
+        } finally {
+            lock.unlock();
         }
     }
 
