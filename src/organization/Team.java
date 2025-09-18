@@ -4,21 +4,20 @@ import contracts.Trainable;
 import person.Coach;
 import person.Player;
 import exception.PlayerNotEligibleException;
+
 import java.time.Year;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Arrays;
-import java.util.Objects;
+import java.util.*;
 
 public class Team extends Organization {
 
     private static final int MAX_PLAYERS = 30;
+
     private final List<Trainable> members = new ArrayList<>();
+    private final List<Player> roster = new ArrayList<>();
 
     private String city;
     private Division division;
     private Coach headCoach;
-    private Player[] roster;
 
     private int disciplinaryPoints;
 
@@ -31,7 +30,6 @@ public class Team extends Organization {
     public Team(Integer id, String name, Year foundedYear, String city) {
         super(id, name, foundedYear);
         this.city = Objects.requireNonNull(city, "city cannot be null");
-        this.roster = new Player[0];
     }
 
     public static boolean isValidPlayersCount(int count) {
@@ -39,8 +37,10 @@ public class Team extends Organization {
     }
 
     public void playMatch() {
-        System.out.println(String.format("%s from %s is playing a match with %d players.",
-                getName(), city, getPlayersCount()));
+        System.out.println(String.format(
+                "%s from %s is playing a match with %d players.",
+                getName(), city, getPlayersCount()
+        ));
     }
 
     public final void printTeamInfo() {
@@ -49,17 +49,18 @@ public class Team extends Organization {
 
     public void addPlayer(Player player) {
         if (player == null) throw new PlayerNotEligibleException("Null player.");
-        if (!player.isEligibleToPlay()) throw new PlayerNotEligibleException("Player not eligible to play: " + player.fullName());
-        if (roster.length >= MAX_PLAYERS) throw new PlayerNotEligibleException("Roster full (" + MAX_PLAYERS + ").");
+        if (!player.isEligibleToPlay()) {
+            throw new PlayerNotEligibleException("Player not eligible to play: " + player.fullName());
+        }
+        if (roster.size() >= MAX_PLAYERS) {
+            throw new PlayerNotEligibleException("Roster full (" + MAX_PLAYERS + ").");
+        }
         for (Player p : roster) {
             if (p.equals(player) || p.getJerseyNumber() == player.getJerseyNumber()) {
                 throw new PlayerNotEligibleException("Duplicate player/jersey: " + player.fullName());
             }
         }
-        Player[] next = new Player[roster.length + 1];
-        System.arraycopy(roster, 0, next, 0, roster.length);
-        next[roster.length] = player;
-        roster = Arrays.copyOf(next, next.length);
+        roster.add(player);
     }
 
     public void addMember(Trainable t) {
@@ -96,15 +97,19 @@ public class Team extends Organization {
         this.headCoach = headCoach;
     }
 
-    public Player[] getRoster() {
-        return Arrays.copyOf(roster, roster.length);
+    public List<Player> getRoster() {
+        return List.copyOf(roster);
     }
 
-    public void setRoster(Player[] roster) {
-        if (roster != null && !isValidPlayersCount(roster.length)) {
+    public void setRoster(Collection<Player> players) {
+        roster.clear();
+        if (players == null) return;
+        if (!isValidPlayersCount(players.size())) {
             throw new PlayerNotEligibleException("Invalid player count");
         }
-        this.roster = roster != null ? Arrays.copyOf(roster, roster.length) : new Player[0];
+        for (Player p : players) {
+            addPlayer(p);
+        }
     }
 
     public int getDisciplinaryPoints() {
@@ -124,7 +129,7 @@ public class Team extends Organization {
     }
 
     public int getPlayersCount() {
-        return roster.length;
+        return roster.size();
     }
 
     @Override
@@ -143,8 +148,14 @@ public class Team extends Organization {
 
     @Override
     public String toString() {
-        return String.format("%s, city='%s', headCoach=%s, division=%s, playersCount=%d, disciplinaryPoints=%d",
-                super.toString(), city, (headCoach != null ? headCoach.fullName() : "none"),
-                (division != null ? division : "none"), getPlayersCount(), disciplinaryPoints);
+        return String.format(
+                "%s, city='%s', headCoach=%s, division=%s, playersCount=%d, disciplinaryPoints=%d",
+                super.toString(),
+                city,
+                (headCoach != null ? headCoach.fullName() : "none"),
+                (division != null ? division : "none"),
+                getPlayersCount(),
+                disciplinaryPoints
+        );
     }
 }

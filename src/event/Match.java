@@ -2,9 +2,9 @@ package event;
 
 import person.Player;
 import person.Referee;
+
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Objects;
+import java.util.*;
 
 public class Match extends Event {
 
@@ -16,9 +16,10 @@ public class Match extends Event {
     private int homeScore;
     private int awayScore;
     private long expectedAttendance;
-    private Referee[] officials = new Referee[0];
-    private Player[] homeSquad = new Player[0];
-    private Player[] awaySquad = new Player[0];
+
+    private final List<Referee> officials = new ArrayList<>();
+    private final List<Player> homeSquad = new ArrayList<>();
+    private final List<Player> awaySquad = new ArrayList<>();
 
     static {
         System.out.println("Match class loaded");
@@ -83,28 +84,31 @@ public class Match extends Event {
         if (expectedAttendance >= 0) this.expectedAttendance = expectedAttendance;
     }
 
-    public Referee[] getOfficials() {
-        return Arrays.copyOf(officials, officials.length);
+    public List<Referee> getOfficials() {
+        return List.copyOf(officials);
     }
 
-    public void setOfficials(Referee[] officials) {
-        this.officials = officials != null ? Arrays.copyOf(officials, officials.length) : new Referee[0];
+    public void setOfficials(Collection<Referee> refs) {
+        officials.clear();
+        if (refs != null) officials.addAll(refs);
     }
 
-    public Player[] getHomeSquad() {
-        return Arrays.copyOf(homeSquad, homeSquad.length);
+    public List<Player> getHomeSquad() {
+        return List.copyOf(homeSquad);
     }
 
-    public void setHomeSquad(Player[] homeSquad) {
-        this.homeSquad = homeSquad != null ? Arrays.copyOf(homeSquad, homeSquad.length) : new Player[0];
+    public void setHomeSquad(Collection<Player> squad) {
+        homeSquad.clear();
+        if (squad != null) homeSquad.addAll(squad);
     }
 
-    public Player[] getAwaySquad() {
-        return Arrays.copyOf(awaySquad, awaySquad.length);
+    public List<Player> getAwaySquad() {
+        return List.copyOf(awaySquad);
     }
 
-    public void setAwaySquad(Player[] awaySquad) {
-        this.awaySquad = awaySquad != null ? Arrays.copyOf(awaySquad, awaySquad.length) : new Player[0];
+    public void setAwaySquad(Collection<Player> squad) {
+        awaySquad.clear();
+        if (squad != null) awaySquad.addAll(squad);
     }
 
     @Override

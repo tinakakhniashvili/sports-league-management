@@ -11,31 +11,19 @@ import person.Person;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Arrays;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class BookingService {
 
     private static final BigDecimal BASE_TICKET_PRICE = new BigDecimal("20.00");
-    private static final int INITIAL_CAPACITY = 10;
 
     private final ReentrantLock lock = new ReentrantLock();
-
-    private Event[] events;
-    private int eventCount;
-
-    public BookingService() {
-        events = new Event[INITIAL_CAPACITY];
-        eventCount = 0;
-    }
+    private final List<Event> events = new ArrayList<>();
 
     public void addEvent(Event event) {
         Objects.requireNonNull(event, "event cannot be null");
-        if (eventCount >= events.length) {
-            events = Arrays.copyOf(events, events.length * 2);
-        }
-        events[eventCount++] = event;
+        events.add(event);
     }
 
     public BigDecimal calculateTicketPrice(BigDecimal multiplier) {
@@ -103,10 +91,11 @@ public class BookingService {
         }
     }
 
-    public Event[] getBookedEvents() {
-        return Arrays.copyOf(events, eventCount);
+    public List<Event> getBookedEvents() {
+        return List.copyOf(events);
     }
 
+    // kept for possible future validation logic
     private boolean validateAttendanceFor(Bookable facility, int expectedAttendance) {
         if (expectedAttendance <= 0) return false;
         if (facility instanceof Stadium s) {
