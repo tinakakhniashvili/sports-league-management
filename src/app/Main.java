@@ -13,9 +13,8 @@ import java.util.*;
 import common.Result;
 
 public class Main {
+
     public static void main(String[] args) {
-
-
         Coach coach = createCoach();
         List<Player> players = createPlayers();
         List<Referee> officials = createReferees();
@@ -33,7 +32,6 @@ public class Main {
 
         System.out.println("Team repo size: " + teamRepo.size());
         System.out.println("Player repo empty? " + playerRepo.isEmpty());
-
 
         BookingService booking = new BookingService();
         booking.addEvent(schedule);
@@ -81,7 +79,6 @@ public class Main {
         System.out.println(match);
         System.out.println("Booked events: " + booking.getBookedEvents().size());
 
-
         List<Player> roster = teams.get(0).getRoster();
         System.out.println("Roster size: " + roster.size());
         Player firstList = roster.get(0);
@@ -89,14 +86,12 @@ public class Main {
             System.out.println("Roster player: " + p.fullName());
         }
 
-
         Set<Coach> coaches = new HashSet<>();
         coaches.add(coach);
         System.out.println("Coaches isEmpty? " + coaches.isEmpty());
         Coach firstSet = coaches.iterator().next();
         System.out.println("First coach: " + firstSet.fullName());
         coaches.remove(coach);
-
 
         Map<Facility, List<Event>> bookingsByFacility = new HashMap<>();
         bookingsByFacility.put(stadium, new ArrayList<>());
@@ -108,7 +103,6 @@ public class Main {
         for (Map.Entry<Facility, List<Event>> e : bookingsByFacility.entrySet()) {
             System.out.println(e.getKey().getName() + " -> events: " + e.getValue().size());
         }
-
 
         Result<Team> maybeTeam = Optional.ofNullable(teamRepo.get(teams.get(0).getId()))
                 .map(Result::ok)
