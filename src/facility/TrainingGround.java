@@ -16,8 +16,8 @@ public class TrainingGround extends Facility {
 
     public TrainingGround(Integer id, String name, String location, boolean indoor, int fieldsCount) {
         super(id, name, location);
-        this.indoor = indoor;
         if (!isValidFieldsCount(fieldsCount)) throw new IllegalArgumentException("Invalid fields count");
+        this.indoor = indoor;
         this.fieldsCount = fieldsCount;
     }
 

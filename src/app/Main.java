@@ -1,5 +1,6 @@
 package app;
 
+import contracts.Bookable;
 import exception.OverbookingException;
 import facility.*;
 import organization.*;
@@ -10,6 +11,7 @@ import services.BookingService;
 import java.time.LocalDate;
 import java.time.Year;
 import java.util.*;
+import java.util.function.*;
 import common.Result;
 
 public class Main {
@@ -40,8 +42,34 @@ public class Main {
         schedule.publish();
         match.play();
 
+        Predicate<Event> eventPolicy = Objects::nonNull;
+        Predicate<Bookable> availabilityPolicy = b -> b != null && b.isAvailable();
+        BiFunction<Event, Integer, java.math.BigDecimal> pricingPolicy = (e, att) -> booking.calculateTicketPrice(e.priceMultiplier());
+        UnaryOperator<Integer> attendanceAdjuster = UnaryOperator.identity();
+        Supplier<java.util.UUID> correlationId = java.util.UUID::randomUUID;
+        Runnable before = () -> System.out.println("Before booking hook");
+        Runnable after = () -> System.out.println("After booking hook");
+        Consumer<String> notifier = System.out::println;
+        Consumer<services.BookingLog> audit = l -> {};
+        Function<Event, String> descriptor = e -> (e instanceof Match m) ? (m.getHomeTeam() + " vs " + m.getAwayTeam()) : e.getDescription();
+
         try {
-            booking.book(match, stadium, coach, 18000);
+            booking.bookWithPolicies(
+                    match,
+                    stadium,
+                    coach,
+                    18000,
+                    eventPolicy,
+                    availabilityPolicy,
+                    pricingPolicy,
+                    attendanceAdjuster,
+                    correlationId,
+                    before,
+                    after,
+                    notifier,
+                    audit,
+                    descriptor
+            );
         } catch (OverbookingException e) {
             System.err.println("Could not book match: " + e.getMessage());
         } catch (RuntimeException e) {
@@ -51,7 +79,22 @@ public class Main {
         stadium.cancel();
 
         try {
-            booking.book(schedule, stadium, coach, 18000);
+            booking.bookWithPolicies(
+                    schedule,
+                    stadium,
+                    coach,
+                    18000,
+                    eventPolicy,
+                    availabilityPolicy,
+                    pricingPolicy,
+                    attendanceAdjuster,
+                    correlationId,
+                    before,
+                    after,
+                    notifier,
+                    audit,
+                    descriptor
+            );
         } catch (OverbookingException e) {
             System.err.println("Could not book schedule: " + e.getMessage());
         } catch (RuntimeException e) {

@@ -11,8 +11,10 @@ import person.Person;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.*;
 
 public class BookingService {
 
@@ -34,57 +36,82 @@ public class BookingService {
 
     public void book(Event event, Bookable facility, Person organizer, int expectedAttendance)
             throws OverbookingException {
+        Predicate<Event> eventPolicy = Objects::nonNull;
+        Predicate<Bookable> availabilityPolicy = b -> b != null && b.isAvailable();
+        BiFunction<Event, Integer, BigDecimal> pricingPolicy = (e, att) -> calculateTicketPrice(e.priceMultiplier());
+        UnaryOperator<Integer> attendanceAdjuster = UnaryOperator.identity();
+        Supplier<UUID> correlationId = UUID::randomUUID;
+        Runnable before = () -> {};
+        Runnable after = () -> {};
+        Consumer<String> notifier = System.out::println;
+        Consumer<BookingLog> audit = l -> {};
+        Function<Event, String> descriptor = e -> {
+            if (e instanceof Match m) return m.getHomeTeam() + " vs " + m.getAwayTeam();
+            return e.getDescription();
+        };
+        bookWithPolicies(event, facility, organizer, expectedAttendance,
+                eventPolicy, availabilityPolicy, pricingPolicy, attendanceAdjuster,
+                correlationId, before, after, notifier, audit, descriptor);
+    }
 
-        if (event == null || facility == null || organizer == null) {
-            throw new IllegalArgumentException("Invalid event, facility, or organizer");
-        }
-        if (!facility.isAvailable()) {
-            throw new FacilityUnavailableException("Facility is not available");
-        }
-        if (expectedAttendance <= 0) {
-            throw new OverbookingException("Expected attendance must be > 0");
-        }
-        if (facility instanceof Stadium s) {
-            if (expectedAttendance > s.getCapacity()) {
-                throw new OverbookingException(
-                        "Expected " + expectedAttendance + " exceeds capacity " + s.getCapacity());
-            }
-        }
+    public void bookWithPolicies(
+            Event event,
+            Bookable facility,
+            Person organizer,
+            int expectedAttendance,
+            Predicate<Event> eventPolicy,
+            Predicate<Bookable> availabilityPolicy,
+            BiFunction<Event, Integer, BigDecimal> pricingPolicy,
+            UnaryOperator<Integer> attendanceAdjuster,
+            Supplier<UUID> correlationId,
+            Runnable beforeHook,
+            Runnable afterHook,
+            Consumer<String> notifier,
+            Consumer<BookingLog> audit,
+            Function<Event, String> eventDescriptor
+    ) throws OverbookingException {
+
+        if (!eventPolicy.test(event) || organizer == null) throw new IllegalArgumentException("Invalid input");
+        if (!availabilityPolicy.test(facility)) throw new FacilityUnavailableException("Facility is not available");
+
+        int adjustedAttendance = attendanceAdjuster.apply(expectedAttendance);
+        if (adjustedAttendance <= 0) throw new OverbookingException("Expected attendance must be > 0");
+
+        if (facility instanceof Stadium s && adjustedAttendance > s.getCapacity())
+            throw new OverbookingException("Expected " + adjustedAttendance + " exceeds capacity " + s.getCapacity());
+
         if (event instanceof Match match) {
             long existing = match.getExpectedAttendance();
-            if (existing > 0 && existing != expectedAttendance) {
-                throw new OverbookingException("Attendance mismatch for match");
-            }
-            match.setExpectedAttendance(expectedAttendance);
+            if (existing > 0 && existing != adjustedAttendance) throw new OverbookingException("Attendance mismatch for match");
+            match.setExpectedAttendance(adjustedAttendance);
         }
 
-        BigDecimal ticketPrice = calculateTicketPrice(event.priceMultiplier());
-        BigDecimal revenue = ticketPrice.multiply(BigDecimal.valueOf(expectedAttendance));
-        String facilityName = (facility instanceof Stadium s) ? s.getName()
-                : facility.getClass().getSimpleName();
-        String eventDescription = (event instanceof Match match)
-                ? String.format("%s vs %s", match.getHomeTeam(), match.getAwayTeam())
-                : event.getDescription();
+        BigDecimal ticketPrice = pricingPolicy.apply(event, adjustedAttendance);
+        BigDecimal revenue = ticketPrice.multiply(BigDecimal.valueOf(adjustedAttendance));
+        String facilityName = (facility instanceof Stadium s) ? s.getName() : facility.getClass().getSimpleName();
+        String eventDescription = eventDescriptor.apply(event);
+        UUID corr = correlationId.get();
 
         lock.lock();
         try {
+            beforeHook.run();
             try (BookingLog log = new BookingLog("bookings.log")) {
                 facility.book(organizer);
                 addEvent(event);
-
-                log.info("Booked " + eventDescription + " at " + facilityName
-                        + " | expected=" + expectedAttendance
+                log.info("corr=" + corr + " | Booked " + eventDescription + " at " + facilityName
+                        + " | expected=" + adjustedAttendance
                         + " | ticket=" + ticketPrice
                         + " | revenue=" + revenue);
-
-                System.out.println("Booking confirmed for " + eventDescription + " at " + facilityName);
-                System.out.println("Organizer: " + organizer.fullName());
-                System.out.println("Expected attendance: " + expectedAttendance);
-                System.out.println("Ticket price: $" + ticketPrice);
-                System.out.println("Projected revenue: $" + revenue);
-                System.out.println("Email sent to organizer");
+                audit.accept(log);
+                notifier.accept("Booking confirmed for " + eventDescription + " at " + facilityName);
+                notifier.accept("Organizer: " + organizer.fullName());
+                notifier.accept("Expected attendance: " + adjustedAttendance);
+                notifier.accept("Ticket price: $" + ticketPrice);
+                notifier.accept("Projected revenue: $" + revenue);
             } catch (IOException ioe) {
                 throw new RuntimeException("Failed to write booking log.", ioe);
+            } finally {
+                afterHook.run();
             }
         } finally {
             lock.unlock();
@@ -95,7 +122,6 @@ public class BookingService {
         return List.copyOf(events);
     }
 
-    // kept for possible future validation logic
     private boolean validateAttendanceFor(Bookable facility, int expectedAttendance) {
         if (expectedAttendance <= 0) return false;
         if (facility instanceof Stadium s) {

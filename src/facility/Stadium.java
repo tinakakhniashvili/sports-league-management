@@ -45,8 +45,8 @@ public class Stadium extends Facility {
     }
 
     public void setCapacity(int capacity) {
-        this.capacity = capacity;
         if (!isValidCapacity(capacity)) throw new IllegalArgumentException("Invalid capacity");
+        this.capacity = capacity;
     }
 
     public String getSurfaceType() {

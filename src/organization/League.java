@@ -28,7 +28,7 @@ public class League extends Organization {
     }
 
     public static boolean isValidTeamCount(int count) {
-        return count > 1 && count <= MAX_TEAMS;
+        return count >= 1 && count <= MAX_TEAMS;
     }
 
     protected void scheduleSeason() {
