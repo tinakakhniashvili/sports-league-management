@@ -11,10 +11,12 @@ import person.Person;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.*;
+import common.functional.TriFunction;
+import common.functional.EventHandler;
+import types.Severity;
 
 public class BookingService {
 
@@ -38,7 +40,8 @@ public class BookingService {
             throws OverbookingException {
         Predicate<Event> eventPolicy = Objects::nonNull;
         Predicate<Bookable> availabilityPolicy = b -> b != null && b.isAvailable();
-        BiFunction<Event, Integer, BigDecimal> pricingPolicy = (e, att) -> calculateTicketPrice(e.priceMultiplier());
+        TriFunction<Event, Integer, BigDecimal, BigDecimal> pricingPolicy3 = (e, att, base) -> calculateTicketPrice(e.priceMultiplier());
+        BiFunction<Event, Integer, BigDecimal> pricingPolicy = (e, att) -> pricingPolicy3.apply(e, att, BASE_TICKET_PRICE);
         UnaryOperator<Integer> attendanceAdjuster = UnaryOperator.identity();
         Supplier<UUID> correlationId = UUID::randomUUID;
         Runnable before = () -> {};
@@ -92,13 +95,15 @@ public class BookingService {
         String eventDescription = eventDescriptor.apply(event);
         UUID corr = correlationId.get();
 
+        EventHandler<String> handler = notifier::accept;
+
         lock.lock();
         try {
             beforeHook.run();
             try (BookingLog log = new BookingLog("bookings.log")) {
                 facility.book(organizer);
                 addEvent(event);
-                log.info("corr=" + corr + " | Booked " + eventDescription + " at " + facilityName
+                log.log(Severity.LOW, "corr=" + corr + " | Booked " + eventDescription + " at " + facilityName
                         + " | expected=" + adjustedAttendance
                         + " | ticket=" + ticketPrice
                         + " | revenue=" + revenue);
@@ -108,6 +113,7 @@ public class BookingService {
                 notifier.accept("Expected attendance: " + adjustedAttendance);
                 notifier.accept("Ticket price: $" + ticketPrice);
                 notifier.accept("Projected revenue: $" + revenue);
+                handler.handle("Booking event logged: " + eventDescription);
             } catch (IOException ioe) {
                 throw new RuntimeException("Failed to write booking log.", ioe);
             } finally {

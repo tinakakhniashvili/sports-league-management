@@ -4,19 +4,20 @@ import contracts.Payable;
 import contracts.Trainable;
 import java.time.LocalDate;
 import java.util.Objects;
+import types.Position;
 
 public class Player extends Person implements Payable, Trainable {
 
-    protected String position;
+    protected Position position;
     private int jerseyNumber;
     private boolean isCaptain;
 
     private double salary;
 
     public Player(Integer id, String name, String surname, LocalDate birthDate,
-                  String position, int jerseyNumber, boolean isCaptain) {
+                  Position position, int jerseyNumber, boolean isCaptain) {
         super(id, name, surname, birthDate);
-        this.position = Objects.requireNonNull(position, "position cannot be null").trim();
+        this.position = Objects.requireNonNull(position, "position cannot be null");
         if (jerseyNumber <= 0) throw new IllegalArgumentException("Jersey number must be positive");
         this.jerseyNumber = jerseyNumber;
         this.isCaptain = isCaptain;
@@ -48,7 +49,6 @@ public class Player extends Person implements Payable, Trainable {
 
     @Override
     public void pay(double amount) {
-        // here you could accumulate payments, write a ledger, etc.
         System.out.printf("Paid %.2f to player %s%n", amount, fullName());
     }
 
@@ -62,12 +62,12 @@ public class Player extends Person implements Payable, Trainable {
         System.out.printf("Player %s is training%n", fullName());
     }
 
-    public String getPosition() {
+    public Position getPosition() {
         return position;
     }
 
-    public void setPosition(String position) {
-        this.position = Objects.requireNonNull(position, "position cannot be null").trim();
+    public void setPosition(Position position) {
+        this.position = Objects.requireNonNull(position, "position cannot be null");
     }
 
     public int getJerseyNumber() {

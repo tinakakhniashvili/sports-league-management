@@ -2,9 +2,9 @@ package event;
 
 import person.Player;
 import person.Referee;
-
 import java.math.BigDecimal;
 import java.util.*;
+import types.MatchPhase;
 
 public class Match extends Event {
 
@@ -20,6 +20,8 @@ public class Match extends Event {
     private final List<Referee> officials = new ArrayList<>();
     private final List<Player> homeSquad = new ArrayList<>();
     private final List<Player> awaySquad = new ArrayList<>();
+
+    private MatchPhase phase = MatchPhase.PREPARATION;
 
     static {
         System.out.println("Match class loaded");
@@ -109,6 +111,18 @@ public class Match extends Event {
     public void setAwaySquad(Collection<Player> squad) {
         awaySquad.clear();
         if (squad != null) awaySquad.addAll(squad);
+    }
+
+    public MatchPhase getPhase() {
+        return phase;
+    }
+
+    public void setPhase(MatchPhase phase) {
+        this.phase = Objects.requireNonNull(phase, "phase cannot be null");
+    }
+
+    public void advancePhase() {
+        this.phase = this.phase.next();
     }
 
     @Override

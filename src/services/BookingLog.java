@@ -3,6 +3,7 @@ package services;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import types.Severity;
 
 public class BookingLog implements AutoCloseable {
 
@@ -24,6 +25,15 @@ public class BookingLog implements AutoCloseable {
     public void error(String msg) throws IOException {
         try {
             out.write("[ERROR] " + msg);
+            out.newLine();
+        } finally {
+            try { out.flush(); } catch (IOException ignored) {}
+        }
+    }
+
+    public void log(Severity severity, String msg) throws IOException {
+        try {
+            out.write("[" + severity.name() + "] " + msg);
             out.newLine();
         } finally {
             try { out.flush(); } catch (IOException ignored) {}

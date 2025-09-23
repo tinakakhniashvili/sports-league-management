@@ -13,6 +13,10 @@ import java.time.Year;
 import java.util.*;
 import java.util.function.*;
 import common.Result;
+import types.Position;
+import common.Money;
+import types.Currency;
+import java.math.BigDecimal;
 
 public class Main {
 
@@ -41,6 +45,9 @@ public class Main {
 
         schedule.publish();
         match.play();
+
+        Money sample = new Money(new BigDecimal("20.00"), Currency.USD);
+        System.out.println(sample.toString());
 
         Predicate<Event> eventPolicy = Objects::nonNull;
         Predicate<Bookable> availabilityPolicy = b -> b != null && b.isAvailable();
@@ -159,9 +166,9 @@ public class Main {
 
     private static List<Player> createPlayers() {
         return new ArrayList<>(List.of(
-                new Player(10, "Nika", "Kapanadze", LocalDate.of(1997, 3, 1), "Forward", 9, true),
-                new Player(11, "Levan", "Chkheidze", LocalDate.of(2000, 7, 22), "Midfielder", 8, false),
-                new Player(12, "Irakli", "Gelashvili", LocalDate.of(1999, 1, 14), "Defender", 4, false)
+                new Player(10, "Nika", "Kapanadze", LocalDate.of(1997, 3, 1), Position.FORWARD, 9, true),
+                new Player(11, "Levan", "Chkheidze", LocalDate.of(2000, 7, 22), Position.MIDFIELDER, 8, false),
+                new Player(12, "Irakli", "Gelashvili", LocalDate.of(1999, 1, 14), Position.DEFENDER, 4, false)
         ));
     }
 
