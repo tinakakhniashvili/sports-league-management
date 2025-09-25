@@ -1,6 +1,7 @@
 package person;
 
 import contracts.Identifiable;
+
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -26,6 +27,7 @@ public abstract class Person implements Identifiable {
     }
 
     public abstract String getRole();
+
     public abstract double discountRate();
 
     public static boolean isValidAge(int age) {

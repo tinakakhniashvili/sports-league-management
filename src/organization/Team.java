@@ -1,12 +1,15 @@
 package organization;
 
 import contracts.Trainable;
+import exception.PlayerNotEligibleException;
 import person.Coach;
 import person.Player;
-import exception.PlayerNotEligibleException;
 
 import java.time.Year;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
 public class Team extends Organization {
 
@@ -25,7 +28,7 @@ public class Team extends Organization {
         System.out.println("Team class loaded");
     }
 
-    public enum Division { EAST, WEST, NORTH, SOUTH }
+    public enum Division {EAST, WEST, NORTH, SOUTH}
 
     public Team(Integer id, String name, Year foundedYear, String city) {
         super(id, name, foundedYear);
@@ -37,14 +40,14 @@ public class Team extends Organization {
     }
 
     public void playMatch() {
-        System.out.println(String.format(
-                "%s from %s is playing a match with %d players.",
+        System.out.printf(
+                "%s from %s is playing a match with %d players.%n",
                 getName(), city, getPlayersCount()
-        ));
+        );
     }
 
     public final void printTeamInfo() {
-        System.out.println(this.toString());
+        System.out.println(this);
     }
 
     public void addPlayer(Player player) {
@@ -135,9 +138,8 @@ public class Team extends Organization {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Team)) return false;
+        if (!(o instanceof Team team)) return false;
         if (!super.equals(o)) return false;
-        Team team = (Team) o;
         return Objects.equals(city, team.city) && division == team.division;
     }
 

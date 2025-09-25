@@ -1,10 +1,12 @@
 package organization;
 
-import java.time.LocalDate;
-import java.time.Year;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.time.LocalDate;
+import java.time.Year;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 public class League extends Organization {
 
@@ -32,10 +34,10 @@ public class League extends Organization {
     }
 
     protected void scheduleSeason() {
-        System.out.println(String.format(
-                "Scheduling %s league %s for %s with %d teams.",
+        System.out.printf(
+                "Scheduling %s league %s for %s with %d teams.%n",
                 sportType, seasonYear, getName(), getNumberOfTeams()
-        ));
+        );
     }
 
     public static BigDecimal applyTax(BigDecimal net) {
@@ -84,9 +86,8 @@ public class League extends Organization {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof League)) return false;
+        if (!(o instanceof League league)) return false;
         if (!super.equals(o)) return false;
-        League league = (League) o;
         return Objects.equals(sportType, league.sportType)
                 && Objects.equals(seasonYear, league.seasonYear);
     }

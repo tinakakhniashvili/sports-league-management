@@ -1,7 +1,8 @@
 package common;
 
-import java.math.BigDecimal;
 import types.Currency;
+
+import java.math.BigDecimal;
 
 public record Money(BigDecimal amount, Currency currency) {
 

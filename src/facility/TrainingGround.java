@@ -31,7 +31,7 @@ public class TrainingGround extends Facility {
     }
 
     public void conductTraining() {
-        System.out.println(String.format("%s training ground is conducting training on %d fields.", getName(), fieldsCount));
+        System.out.printf("%s training ground is conducting training on %d fields.%n", getName(), fieldsCount);
     }
 
     public boolean isIndoor() {
@@ -54,9 +54,8 @@ public class TrainingGround extends Facility {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof TrainingGround)) return false;
+        if (!(o instanceof TrainingGround that)) return false;
         if (!super.equals(o)) return false;
-        TrainingGround that = (TrainingGround) o;
         return indoor == that.indoor && fieldsCount == that.fieldsCount;
     }
 

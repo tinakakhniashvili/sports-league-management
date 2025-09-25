@@ -6,9 +6,13 @@ public enum Severity {
 
     private final int weight;
 
-    Severity(int weight) { this.weight = weight; }
+    Severity(int weight) {
+        this.weight = weight;
+    }
 
-    public int weight() { return weight; }
+    public int weight() {
+        return weight;
+    }
 
     public Severity combine(Severity other) {
         int sum = this.weight + other.weight;

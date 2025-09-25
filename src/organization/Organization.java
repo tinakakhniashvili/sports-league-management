@@ -2,6 +2,7 @@ package organization;
 
 import contracts.Identifiable;
 import contracts.Payable;
+
 import java.time.Year;
 import java.util.Collection;
 import java.util.Objects;
@@ -46,14 +47,18 @@ public abstract class Organization implements Identifiable {
         this.id = Objects.requireNonNull(id, "id cannot be null");
     }
 
-    public String getName() { return name; }
+    public String getName() {
+        return name;
+    }
 
     public void setName(String name) {
         if (!isValidName(name)) throw new IllegalArgumentException("Invalid name");
         this.name = name.trim();
     }
 
-    public Year getFoundedYear() { return foundedYear; }
+    public Year getFoundedYear() {
+        return foundedYear;
+    }
 
     public void setFoundedYear(Year foundedYear) {
         this.foundedYear = Objects.requireNonNull(foundedYear, "foundedYear cannot be null");
@@ -70,14 +75,17 @@ public abstract class Organization implements Identifiable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Organization)) return false;
-        Organization that = (Organization) o;
+        if (!(o instanceof Organization that)) return false;
         return Objects.equals(id, that.id);
     }
 
     @Override
-    public int hashCode() { return Objects.hash(id); }
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 
     @Override
-    public String toString() { return summary(); }
+    public String toString() {
+        return summary();
+    }
 }

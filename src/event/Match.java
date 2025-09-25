@@ -2,9 +2,13 @@ package event;
 
 import person.Player;
 import person.Referee;
-import java.math.BigDecimal;
-import java.util.*;
 import types.MatchPhase;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
 public class Match extends Event {
 
@@ -43,7 +47,7 @@ public class Match extends Event {
     }
 
     public void play() {
-        System.out.println(String.format("Match: %s vs %s at %s.", homeTeam, awayTeam, stadiumName));
+        System.out.printf("Match: %s vs %s at %s.%n", homeTeam, awayTeam, stadiumName);
     }
 
     public String getHomeTeam() {
@@ -128,9 +132,8 @@ public class Match extends Event {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Match)) return false;
+        if (!(o instanceof Match match)) return false;
         if (!super.equals(o)) return false;
-        Match match = (Match) o;
         return Objects.equals(homeTeam, match.homeTeam) && Objects.equals(awayTeam, match.awayTeam);
     }
 

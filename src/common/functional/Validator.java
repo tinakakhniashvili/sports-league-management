@@ -5,6 +5,7 @@ import common.Result;
 @FunctionalInterface
 public interface Validator<T> {
     Result validate(T t);
+
     default Validator<T> and(Validator<T> other) {
         return t -> {
             Result r = this.validate(t);

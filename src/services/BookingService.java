@@ -14,6 +14,7 @@ import java.math.RoundingMode;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.*;
+
 import common.functional.TriFunction;
 import common.functional.EventHandler;
 import types.Severity;
@@ -44,10 +45,13 @@ public class BookingService {
         BiFunction<Event, Integer, BigDecimal> pricingPolicy = (e, att) -> pricingPolicy3.apply(e, att, BASE_TICKET_PRICE);
         UnaryOperator<Integer> attendanceAdjuster = UnaryOperator.identity();
         Supplier<UUID> correlationId = UUID::randomUUID;
-        Runnable before = () -> {};
-        Runnable after = () -> {};
+        Runnable before = () -> {
+        };
+        Runnable after = () -> {
+        };
         Consumer<String> notifier = System.out::println;
-        Consumer<BookingLog> audit = l -> {};
+        Consumer<BookingLog> audit = l -> {
+        };
         Function<Event, String> descriptor = e -> {
             if (e instanceof Match m) return m.getHomeTeam() + " vs " + m.getAwayTeam();
             return e.getDescription();
@@ -85,7 +89,8 @@ public class BookingService {
 
         if (event instanceof Match match) {
             long existing = match.getExpectedAttendance();
-            if (existing > 0 && existing != adjustedAttendance) throw new OverbookingException("Attendance mismatch for match");
+            if (existing > 0 && existing != adjustedAttendance)
+                throw new OverbookingException("Attendance mismatch for match");
             match.setExpectedAttendance(adjustedAttendance);
         }
 

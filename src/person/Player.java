@@ -2,8 +2,10 @@ package person;
 
 import contracts.Payable;
 import contracts.Trainable;
+
 import java.time.LocalDate;
 import java.util.Objects;
+
 import types.Position;
 
 public class Player extends Person implements Payable, Trainable {

@@ -1,7 +1,7 @@
 package event;
 
-import java.time.LocalDateTime;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 public class MatchCreatedEvent extends Event {
 
@@ -23,6 +23,11 @@ public class MatchCreatedEvent extends Event {
         return BigDecimal.ONE;
     }
 
-    public Match match() { return match; }
-    public LocalDateTime occurredAt() { return occurredAt; }
+    public Match match() {
+        return match;
+    }
+
+    public LocalDateTime occurredAt() {
+        return occurredAt;
+    }
 }

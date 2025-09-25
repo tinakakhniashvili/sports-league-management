@@ -37,7 +37,7 @@ public abstract class Facility implements Bookable, Identifiable {
     }
 
     public void open() {
-        System.out.println(String.format("Facility %s at %s is now open.", name, location));
+        System.out.printf("Facility %s at %s is now open.%n", name, location);
     }
 
     public Integer getIdNumber() {
@@ -95,8 +95,7 @@ public abstract class Facility implements Bookable, Identifiable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Facility)) return false;
-        Facility that = (Facility) o;
+        if (!(o instanceof Facility that)) return false;
         return Objects.equals(id, that.id);
     }
 

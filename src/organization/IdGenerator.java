@@ -6,7 +6,8 @@ public final class IdGenerator {
 
     private static int counter = 1;
 
-    private IdGenerator() {}
+    private IdGenerator() {
+    }
 
     public static synchronized int nextId() {
 

@@ -2,10 +2,11 @@ package event;
 
 import contracts.Schedulable;
 import exception.ScheduleConflictException;
+
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -41,8 +42,8 @@ public class Schedule extends Event {
     }
 
     public void publish() {
-        System.out.println(String.format("Publishing schedule for %s, round %d on %s with expected spectators: %d",
-                leagueName, roundNumber, roundDate, spectatorsExpected));
+        System.out.printf("Publishing schedule for %s, round %d on %s with expected spectators: %d%n",
+                leagueName, roundNumber, roundDate, spectatorsExpected);
     }
 
     public void add(Schedulable item) {
@@ -120,9 +121,8 @@ public class Schedule extends Event {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Schedule)) return false;
+        if (!(o instanceof Schedule schedule)) return false;
         if (!super.equals(o)) return false;
-        Schedule schedule = (Schedule) o;
         return roundNumber == schedule.roundNumber && Objects.equals(leagueName, schedule.leagueName);
     }
 

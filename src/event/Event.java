@@ -3,8 +3,8 @@ package event;
 import contracts.Identifiable;
 import contracts.Schedulable;
 
-import java.time.LocalDateTime;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public abstract class Event implements Schedulable, Identifiable {
@@ -97,8 +97,7 @@ public abstract class Event implements Schedulable, Identifiable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Event)) return false;
-        Event event = (Event) o;
+        if (!(o instanceof Event event)) return false;
         return Objects.equals(id, event.id);
     }
 

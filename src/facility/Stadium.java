@@ -37,7 +37,7 @@ public class Stadium extends Facility {
     }
 
     public void hostMatch() {
-        System.out.println(String.format("%s stadium is hosting a match with capacity %d.", getName(), capacity));
+        System.out.printf("%s stadium is hosting a match with capacity %d.%n", getName(), capacity);
     }
 
     public int getCapacity() {
@@ -76,9 +76,8 @@ public class Stadium extends Facility {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Stadium)) return false;
+        if (!(o instanceof Stadium stadium)) return false;
         if (!super.equals(o)) return false;
-        Stadium stadium = (Stadium) o;
         return capacity == stadium.capacity && Objects.equals(surfaceType, stadium.surfaceType);
     }
 

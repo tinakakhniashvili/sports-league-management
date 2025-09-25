@@ -2,6 +2,7 @@ package person;
 
 import contracts.Payable;
 import contracts.Trainable;
+
 import java.time.LocalDate;
 import java.util.Objects;
 
