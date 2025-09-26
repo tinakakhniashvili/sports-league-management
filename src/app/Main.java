@@ -18,9 +18,13 @@ import common.Money;
 import types.Currency;
 import java.math.BigDecimal;
 
+import common.annotations.Auditable;
+
+import java.lang.reflect.*;
+
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         Coach coach = createCoach();
         List<Player> players = createPlayers();
         List<Referee> officials = createReferees();
@@ -132,9 +136,7 @@ public class Main {
         List<Player> roster = teams.get(0).getRoster();
         System.out.println("Roster size: " + roster.size());
         Player firstList = roster.get(0);
-        for (Player p : roster) {
-            System.out.println("Roster player: " + p.fullName());
-        }
+        roster.stream().map(Player::fullName).forEach(n -> System.out.println("Roster player: " + n));
 
         Set<Coach> coaches = new HashSet<>();
         coaches.add(coach);
@@ -147,17 +149,53 @@ public class Main {
         bookingsByFacility.put(stadium, new ArrayList<>());
         bookingsByFacility.get(stadium).add(match);
         System.out.println("Map size: " + bookingsByFacility.size());
-        Map.Entry<Facility, List<Event>> firstMap =
-                bookingsByFacility.entrySet().iterator().next();
-        System.out.println("First facility key: " + firstMap.getKey().getName());
-        for (Map.Entry<Facility, List<Event>> e : bookingsByFacility.entrySet()) {
-            System.out.println(e.getKey().getName() + " -> events: " + e.getValue().size());
-        }
+        bookingsByFacility.entrySet().stream()
+                .forEach(e -> System.out.println(e.getKey().getName() + " -> events: " + e.getValue().size()));
 
         Result<Team> maybeTeam = Optional.ofNullable(teamRepo.get(teams.get(0).getId()))
                 .map(Result::ok)
                 .orElse(Result.error("Team not found"));
         System.out.println("Result ok? " + maybeTeam.isOk());
+
+        System.out.println("\n=== Reflection Demo ===");
+        Class<?> playerClass = Player.class;
+        for (Field f : playerClass.getDeclaredFields()) {
+            System.out.printf("%s %s %s%n",
+                    Modifier.toString(f.getModifiers()),
+                    f.getType().getSimpleName(),
+                    f.getName());
+        }
+        for (Constructor<?> c : playerClass.getDeclaredConstructors()) {
+            System.out.printf("%s %s(%s)%n",
+                    Modifier.toString(c.getModifiers()),
+                    c.getName(),
+                    Arrays.toString(c.getParameterTypes()));
+        }
+        for (Method m : playerClass.getDeclaredMethods()) {
+            System.out.printf("%s %s %s(%s)%n",
+                    Modifier.toString(m.getModifiers()),
+                    m.getReturnType().getSimpleName(),
+                    m.getName(),
+                    Arrays.toString(m.getParameterTypes()));
+        }
+        Constructor<?> ctor = playerClass.getConstructor(
+                Integer.class, String.class, String.class, LocalDate.class,
+                Position.class, int.class, boolean.class);
+        Object playerObj = ctor.newInstance(
+                1, "Gocha", "Kakhniashvili", LocalDate.of(1990, 5, 1),
+                Position.FORWARD, 10, true);
+        Method trainMethod = playerClass.getMethod("train");
+        trainMethod.invoke(playerObj);
+        if (playerClass.isAnnotationPresent(Auditable.class)) {
+            Auditable ann = playerClass.getAnnotation(Auditable.class);
+            System.out.println("Player class annotated: " + ann.value());
+        }
+        for (Method m : playerClass.getDeclaredMethods()) {
+            if (m.isAnnotationPresent(Auditable.class)) {
+                System.out.println("Method " + m.getName() + " annotated: " +
+                        m.getAnnotation(Auditable.class).value());
+            }
+        }
     }
 
     private static Coach createCoach() {

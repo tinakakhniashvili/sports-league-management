@@ -48,17 +48,24 @@ public class Schedule extends Event {
 
     public void add(Schedulable item) {
         Objects.requireNonNull(item, "item cannot be null");
-        for (Schedulable ex : items) {
-            if (overlaps(ex, item)) {
-                throw new ScheduleConflictException("Schedule conflict: '" + ex.getTitle() + "' overlaps '" + item.getTitle() + "'");
-            }
+
+        boolean conflict = items.stream().anyMatch(ex -> overlaps(ex, item));
+        if (conflict) {
+            throw new ScheduleConflictException(
+                    "Schedule conflict: " + items.stream()
+                            .filter(ex -> overlaps(ex, item))
+                            .findFirst()
+                            .map(Schedulable::getTitle)
+                            .orElse("Existing")
+                            + "'overlaps'" + item.getTitle() + "'"
+            );
         }
         items.add(item);
     }
 
     public void addAll(List<? extends Schedulable> schedulables) {
         if (schedulables == null) return;
-        for (Schedulable s : schedulables) add(s);
+        schedulables.forEach(this::add);
     }
 
     public List<Schedulable> getItems() {
@@ -67,15 +74,15 @@ public class Schedule extends Event {
 
     public void printAgenda() {
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        for (Schedulable s : items) {
-            LocalDateTime start = s.getStartTime();
-            LocalDateTime end = s.getEndTime();
-            String title = s.getTitle();
-            System.out.printf("%s  %s—%s%n",
-                    title,
-                    start != null ? start.format(fmt) : "N/A",
-                    end != null ? end.format(fmt) : "N/A");
-        }
+        items.stream()
+                .map(s -> {
+                    LocalDateTime start = s.getStartTime();
+                    LocalDateTime end = s.getEndTime();
+                    String startStr = (start != null) ? start.format(fmt) : "N/A";
+                    String endStr = (end != null) ? end.format(fmt) : "N/A";
+                    return String.format("%s: %s (%s)", s.getTitle(), startStr, endStr);
+                })
+                .forEach(System.out::println);
     }
 
     private boolean overlaps(Schedulable a, Schedulable b) {

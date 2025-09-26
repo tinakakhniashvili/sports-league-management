@@ -2,12 +2,14 @@ package person;
 
 import contracts.Payable;
 import contracts.Trainable;
+import common.annotations.Auditable;
 
 import java.time.LocalDate;
 import java.util.Objects;
 
 import types.Position;
 
+@Auditable("Critical entity: Player")
 public class Player extends Person implements Payable, Trainable {
 
     protected Position position;
@@ -59,6 +61,7 @@ public class Player extends Person implements Payable, Trainable {
         this.salary = salary;
     }
 
+    @Auditable("Training action")
     @Override
     public void train() {
         System.out.printf("Player %s is training%n", fullName());

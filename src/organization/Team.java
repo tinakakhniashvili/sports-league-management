@@ -4,6 +4,7 @@ import contracts.Trainable;
 import exception.PlayerNotEligibleException;
 import person.Coach;
 import person.Player;
+import common.annotations.Auditable;
 
 import java.time.Year;
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
+@Auditable("Team entity")
 public class Team extends Organization {
 
     private static final int MAX_PLAYERS = 30;
@@ -22,6 +24,7 @@ public class Team extends Organization {
     private Division division;
     private Coach headCoach;
 
+    @Auditable("Disciplinary points field")
     private int disciplinaryPoints;
 
     static {
@@ -58,11 +61,13 @@ public class Team extends Organization {
         if (roster.size() >= MAX_PLAYERS) {
             throw new PlayerNotEligibleException("Roster full (" + MAX_PLAYERS + ").");
         }
-        for (Player p : roster) {
-            if (p.equals(player) || p.getJerseyNumber() == player.getJerseyNumber()) {
-                throw new PlayerNotEligibleException("Duplicate player/jersey: " + player.fullName());
-            }
+
+        boolean dup = roster.stream().anyMatch(p -> p.equals(player) || p.getJerseyNumber() == player.getJerseyNumber());
+
+        if (dup) {
+            throw new PlayerNotEligibleException("Player not eligible to play: " + player.fullName());
         }
+
         roster.add(player);
     }
 
@@ -75,9 +80,7 @@ public class Team extends Organization {
     }
 
     public void groupTraining() {
-        for (Trainable t : members) {
-            t.train();
-        }
+        members.stream().forEach(Trainable::train);
     }
 
     public void addDisciplinaryPoints(int delta) {
@@ -110,9 +113,7 @@ public class Team extends Organization {
         if (!isValidPlayersCount(players.size())) {
             throw new PlayerNotEligibleException("Invalid player count");
         }
-        for (Player p : players) {
-            addPlayer(p);
-        }
+        players.stream().forEach(this::addPlayer);
     }
 
     public int getDisciplinaryPoints() {
