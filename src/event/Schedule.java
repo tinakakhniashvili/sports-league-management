@@ -10,6 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Schedule extends Event {
 
@@ -48,7 +49,6 @@ public class Schedule extends Event {
 
     public void add(Schedulable item) {
         Objects.requireNonNull(item, "item cannot be null");
-
         boolean conflict = items.stream().anyMatch(ex -> overlaps(ex, item));
         if (conflict) {
             throw new ScheduleConflictException(
@@ -123,6 +123,10 @@ public class Schedule extends Event {
 
     public void setSpectatorsExpected(long spectatorsExpected) {
         if (spectatorsExpected >= 0) this.spectatorsExpected = spectatorsExpected;
+    }
+
+    public List<String> getAgendaTitles() {
+        return items.stream().map(Schedulable::getTitle).collect(Collectors.toList());
     }
 
     @Override

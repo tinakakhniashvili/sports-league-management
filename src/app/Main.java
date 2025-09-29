@@ -1,26 +1,36 @@
 package app;
 
+import common.Money;
+import common.Result;
+import common.annotations.Auditable;
 import contracts.Bookable;
+import event.Event;
+import event.Match;
+import event.Schedule;
 import exception.OverbookingException;
-import facility.*;
-import organization.*;
-import person.*;
-import event.*;
+import facility.Facility;
+import facility.Stadium;
+import facility.TrainingGround;
+import organization.IdGenerator;
+import organization.League;
+import organization.Repository;
+import organization.Team;
+import person.Coach;
+import person.Player;
+import person.Referee;
 import services.BookingService;
+import types.Currency;
+import types.Position;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Year;
 import java.util.*;
 import java.util.function.*;
-import common.Result;
-import types.Position;
-import common.Money;
-import types.Currency;
-import java.math.BigDecimal;
-
-import common.annotations.Auditable;
-
-import java.lang.reflect.*;
 
 public class Main {
 
@@ -61,7 +71,8 @@ public class Main {
         Runnable before = () -> System.out.println("Before booking hook");
         Runnable after = () -> System.out.println("After booking hook");
         Consumer<String> notifier = System.out::println;
-        Consumer<services.BookingLog> audit = l -> {};
+        Consumer<services.BookingLog> audit = l -> {
+        };
         Function<Event, String> descriptor = e -> (e instanceof Match m) ? (m.getHomeTeam() + " vs " + m.getAwayTeam()) : e.getDescription();
 
         try {
@@ -136,7 +147,9 @@ public class Main {
         List<Player> roster = teams.get(0).getRoster();
         System.out.println("Roster size: " + roster.size());
         Player firstList = roster.get(0);
-        roster.stream().map(Player::fullName).forEach(n -> System.out.println("Roster player: " + n));
+        roster.stream()
+                .map(Player::fullName)
+                .forEach(n -> System.out.println("Roster player: " + n));
 
         Set<Coach> coaches = new HashSet<>();
         coaches.add(coach);

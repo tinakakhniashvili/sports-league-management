@@ -1,12 +1,16 @@
 package organization;
 
+import person.Player;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.Year;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class League extends Organization {
 
@@ -81,6 +85,12 @@ public class League extends Organization {
 
     public void setSeasonStartDate(LocalDate seasonStartDate) {
         this.seasonStartDate = seasonStartDate;
+    }
+
+    public List<Player> getAllPlayers() {
+        return teams.stream()
+                .flatMap(t -> t.getRoster().stream())
+                .collect(Collectors.toList());
     }
 
     @Override

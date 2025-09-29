@@ -1,16 +1,17 @@
 package organization;
 
+import common.annotations.Auditable;
 import contracts.Trainable;
 import exception.PlayerNotEligibleException;
 import person.Coach;
 import person.Player;
-import common.annotations.Auditable;
 
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Auditable("Team entity")
 public class Team extends Organization {
@@ -61,13 +62,11 @@ public class Team extends Organization {
         if (roster.size() >= MAX_PLAYERS) {
             throw new PlayerNotEligibleException("Roster full (" + MAX_PLAYERS + ").");
         }
-
-        boolean dup = roster.stream().anyMatch(p -> p.equals(player) || p.getJerseyNumber() == player.getJerseyNumber());
-
+        boolean dup = roster.stream()
+                .anyMatch(p -> p.equals(player) || p.getJerseyNumber() == player.getJerseyNumber());
         if (dup) {
             throw new PlayerNotEligibleException("Player not eligible to play: " + player.fullName());
         }
-
         roster.add(player);
     }
 
@@ -134,6 +133,10 @@ public class Team extends Organization {
 
     public int getPlayersCount() {
         return roster.size();
+    }
+
+    public List<String> getRosterNames() {
+        return roster.stream().map(Player::fullName).collect(Collectors.toList());
     }
 
     @Override

@@ -2,9 +2,8 @@ package organization;
 
 import contracts.Identifiable;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Repository<T extends Identifiable> {
 
@@ -34,4 +33,15 @@ public class Repository<T extends Identifiable> {
         return byId.values();
     }
 
+    public List<T> findByIds(Collection<String> ids) {
+        if (ids == null || ids.isEmpty()) return List.of();
+        return ids.stream()
+                .map(id -> Optional.ofNullable(byId.get(id)))
+                .flatMap(Optional::stream)
+                .collect(Collectors.toList());
+    }
+
+    public List<String> findAllIds() {
+        return byId.keySet().stream().collect(Collectors.toList());
+    }
 }

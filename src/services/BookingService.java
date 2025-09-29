@@ -1,5 +1,7 @@
 package services;
 
+import common.functional.EventHandler;
+import common.functional.TriFunction;
 import contracts.Bookable;
 import event.Event;
 import event.Match;
@@ -7,17 +9,20 @@ import exception.FacilityUnavailableException;
 import exception.OverbookingException;
 import facility.Stadium;
 import person.Person;
+import person.Player;
+import person.Referee;
+import types.Severity;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.*;
-
-import common.functional.TriFunction;
-import common.functional.EventHandler;
-import types.Severity;
+import java.util.stream.Collectors;
 
 public class BookingService {
 
@@ -139,5 +144,26 @@ public class BookingService {
             return expectedAttendance <= s.getCapacity();
         }
         return true;
+    }
+
+    public List<Player> getAllPlayersFromBookedMatches() {
+        return events.stream()
+                .filter(Match.class::isInstance)
+                .map(Match.class::cast)
+                .flatMap(m -> {
+                    List<Player> all = new ArrayList<>();
+                    all.addAll(m.getHomeSquad());
+                    all.addAll(m.getAwaySquad());
+                    return all.stream();
+                })
+                .collect(Collectors.toList());
+    }
+
+    public List<Referee> getAllRefereesFromBookedMatches() {
+        return events.stream()
+                .filter(Match.class::isInstance)
+                .map(Match.class::cast)
+                .flatMap(m -> m.getOfficials().stream())
+                .collect(Collectors.toList());
     }
 }
