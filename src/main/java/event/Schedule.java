@@ -49,7 +49,8 @@ public class Schedule extends Event {
 
     public void add(Schedulable item) {
         Objects.requireNonNull(item, "item cannot be null");
-        boolean conflict = items.stream().anyMatch(ex -> overlaps(ex, item));
+        boolean conflict = items.stream()
+                .anyMatch(ex -> overlaps(ex, item));
         if (conflict) {
             throw new ScheduleConflictException(
                     "Schedule conflict: " + items.stream()
@@ -126,7 +127,9 @@ public class Schedule extends Event {
     }
 
     public List<String> getAgendaTitles() {
-        return items.stream().map(Schedulable::getTitle).collect(Collectors.toList());
+        return items.stream()
+                .map(Schedulable::getTitle)
+                .collect(Collectors.toList());
     }
 
     @Override

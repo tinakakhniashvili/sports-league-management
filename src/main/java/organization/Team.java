@@ -79,7 +79,8 @@ public class Team extends Organization {
     }
 
     public void groupTraining() {
-        members.stream().forEach(Trainable::train);
+        members.stream()
+                .forEach(Trainable::train);
     }
 
     public void addDisciplinaryPoints(int delta) {
@@ -112,7 +113,8 @@ public class Team extends Organization {
         if (!isValidPlayersCount(players.size())) {
             throw new PlayerNotEligibleException("Invalid player count");
         }
-        players.stream().forEach(this::addPlayer);
+        players.stream()
+                .forEach(this::addPlayer);
     }
 
     public int getDisciplinaryPoints() {
@@ -136,7 +138,10 @@ public class Team extends Organization {
     }
 
     public List<String> getRosterNames() {
-        return roster.stream().map(Player::fullName).collect(Collectors.toList());
+        return roster
+                .stream()
+                .map(Player::fullName)
+                .collect(Collectors.toList());
     }
 
     @Override

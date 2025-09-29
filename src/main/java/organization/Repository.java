@@ -42,6 +42,7 @@ public class Repository<T extends Identifiable> {
     }
 
     public List<String> findAllIds() {
-        return byId.keySet().stream().collect(Collectors.toList());
+        return byId.keySet().stream()
+                .collect(Collectors.toList());
     }
 }
