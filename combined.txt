@@ -1,3 +1,21 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.solvd</groupId>
+    <artifactId>sports-league-management</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+</project>
 package com.solvd.sportsleaguemanagement.app;
 
 import com.solvd.sportsleaguemanagement.common.Money;
@@ -21,17 +39,12 @@ import com.solvd.sportsleaguemanagement.person.Referee;
 import com.solvd.sportsleaguemanagement.services.*;
 import com.solvd.sportsleaguemanagement.types.Currency;
 import com.solvd.sportsleaguemanagement.types.Position;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 
-import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.Year;
 import java.util.*;
@@ -40,14 +53,6 @@ import java.util.function.*;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        URL url = Main.class.getResource("/book.txt");
-        if (url != null) {
-            String text = FileUtils.readFileToString(new File(url.toURI()), StandardCharsets.UTF_8);
-            String[] words = StringUtils.split(StringUtils.lowerCase(text).replaceAll("[^\\p{L}\\p{Nd}]+", " "));
-            long unique = Arrays.stream(words).filter(StringUtils::isNotBlank).distinct().count();
-            FileUtils.writeStringToFile(new File("target/unique-words.txt"), "Unique words: " + unique, StandardCharsets.UTF_8);
-        }
-
         Coach coach = createCoach();
         List<Player> players = createPlayers();
         List<Referee> officials = createReferees();
@@ -84,7 +89,8 @@ public class Main {
         Runnable before = () -> System.out.println("Before booking hook");
         Runnable after = () -> System.out.println("After booking hook");
         Consumer<String> notifier = System.out::println;
-        Consumer<BookingLog> audit = l -> {};
+        Consumer<BookingLog> audit = l -> {
+        };
         Function<Event, String> descriptor = e -> (e instanceof Match m) ? (m.getHomeTeam() + " vs " + m.getAwayTeam()) : e.getDescription();
 
         try {
@@ -159,7 +165,9 @@ public class Main {
         List<Player> roster = teams.get(0).getRoster();
         System.out.println("Roster size: " + roster.size());
         Player firstList = roster.get(0);
-        roster.stream().map(Player::fullName).forEach(n -> System.out.println("Roster player: " + n));
+        roster.stream()
+                .map(Player::fullName)
+                .forEach(n -> System.out.println("Roster player: " + n));
 
         Set<Coach> coaches = new HashSet<>();
         coaches.add(coach);
@@ -172,24 +180,41 @@ public class Main {
         bookingsByFacility.put(stadium, new ArrayList<>());
         bookingsByFacility.get(stadium).add(match);
         System.out.println("Map size: " + bookingsByFacility.size());
-        bookingsByFacility.entrySet().stream().forEach(e -> System.out.println(e.getKey().getName() + " -> events: " + e.getValue().size()));
+        bookingsByFacility.entrySet().stream()
+                .forEach(e -> System.out.println(e.getKey().getName() + " -> events: " + e.getValue().size()));
 
-        Result<Team> maybeTeam = Optional.ofNullable(teamRepo.get(teams.get(0).getId())).map(Result::ok).orElse(Result.error("Team not found"));
+        Result<Team> maybeTeam = Optional.ofNullable(teamRepo.get(teams.get(0).getId()))
+                .map(Result::ok)
+                .orElse(Result.error("Team not found"));
         System.out.println("Result ok? " + maybeTeam.isOk());
 
         System.out.println("\n=== Reflection Demo ===");
         Class<?> playerClass = Player.class;
         for (Field f : playerClass.getDeclaredFields()) {
-            System.out.printf("%s %s %s%n", Modifier.toString(f.getModifiers()), f.getType().getSimpleName(), f.getName());
+            System.out.printf("%s %s %s%n",
+                    Modifier.toString(f.getModifiers()),
+                    f.getType().getSimpleName(),
+                    f.getName());
         }
         for (Constructor<?> c : playerClass.getDeclaredConstructors()) {
-            System.out.printf("%s %s(%s)%n", Modifier.toString(c.getModifiers()), c.getName(), Arrays.toString(c.getParameterTypes()));
+            System.out.printf("%s %s(%s)%n",
+                    Modifier.toString(c.getModifiers()),
+                    c.getName(),
+                    Arrays.toString(c.getParameterTypes()));
         }
         for (Method m : playerClass.getDeclaredMethods()) {
-            System.out.printf("%s %s %s(%s)%n", Modifier.toString(m.getModifiers()), m.getReturnType().getSimpleName(), m.getName(), Arrays.toString(m.getParameterTypes()));
+            System.out.printf("%s %s %s(%s)%n",
+                    Modifier.toString(m.getModifiers()),
+                    m.getReturnType().getSimpleName(),
+                    m.getName(),
+                    Arrays.toString(m.getParameterTypes()));
         }
-        Constructor<?> ctor = playerClass.getConstructor(Integer.class, String.class, String.class, LocalDate.class, Position.class, int.class, boolean.class);
-        Object playerObj = ctor.newInstance(1, "Gocha", "Kakhniashvili", LocalDate.of(1990, 5, 1), Position.FORWARD, 10, true);
+        Constructor<?> ctor = playerClass.getConstructor(
+                Integer.class, String.class, String.class, LocalDate.class,
+                Position.class, int.class, boolean.class);
+        Object playerObj = ctor.newInstance(
+                1, "Gocha", "Kakhniashvili", LocalDate.of(1990, 5, 1),
+                Position.FORWARD, 10, true);
         Method trainMethod = playerClass.getMethod("train");
         trainMethod.invoke(playerObj);
         if (playerClass.isAnnotationPresent(Auditable.class)) {
@@ -198,7 +223,8 @@ public class Main {
         }
         for (Method m : playerClass.getDeclaredMethods()) {
             if (m.isAnnotationPresent(Auditable.class)) {
-                System.out.println("Method " + m.getName() + " annotated: " + m.getAnnotation(Auditable.class).value());
+                System.out.println("Method " + m.getName() + " annotated: " +
+                        m.getAnnotation(Auditable.class).value());
             }
         }
     }
@@ -226,7 +252,10 @@ public class Main {
         Team teamA = new Team(101, "Red Hawks", Year.of(2005), "Tbilisi");
         teamA.setHeadCoach(coach);
         teamA.setDivision(Team.Division.EAST);
-        players.forEach(p -> { teamA.addPlayer(p); teamA.addMember(p); });
+        players.forEach(p -> {
+            teamA.addPlayer(p);
+            teamA.addMember(p);
+        });
         teamA.addMember(coach);
 
         Team teamB = new Team(102, "Blue Bears", Year.of(2010), "Batumi");
