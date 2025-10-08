@@ -1,2 +1,2 @@
 Project title: Sports League
-Line under conflict (resolved)
+Line under conflict (final)
