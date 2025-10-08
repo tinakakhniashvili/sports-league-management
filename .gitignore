@@ -1,4 +1,29 @@
+### Java ###
+*.class
+*.log
+hs_err_pid*
+replay_pid*
+
+### Build artifacts ###
+target/
+generated-sources/
+generated-test-sources/
+maven-status/
+maven-archiver/
+dependency-reduced-pom.xml
+
+# JARs / packages
+*.jar
+*.war
+*.ear
+
+### Logs (project-specific) ###
+logs/
+bookings.log
+
 ### IntelliJ IDEA ###
+.idea/
+*.iml
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
@@ -25,7 +50,10 @@ bin/
 ### VS Code ###
 .vscode/
 
-### Mac OS ###
-.DS_Store
+### Maven Wrapper (keep the wrapper JAR tracked if you use it) ###
+!.mvn/wrapper/maven-wrapper.jar
+.mvn/timing.properties
 
-.idea/
+### OS files ###
+.DS_Store
+Thumbs.db
