@@ -2,11 +2,15 @@ package com.solvd.sportsleaguemanagement.person;
 
 import com.solvd.sportsleaguemanagement.contracts.Payable;
 import com.solvd.sportsleaguemanagement.exception.InvalidIdException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.time.LocalDate;
 import java.util.Objects;
 
 public class Referee extends Person implements Payable {
+
+    private static final Logger LOGGER = LogManager.getLogger(Referee.class);
 
     private String certificationLevel;
     private int matchesOfficiated;
@@ -32,7 +36,7 @@ public class Referee extends Person implements Payable {
     }
 
     public void officiateMatch() {
-        System.out.println(String.format("%s is officiating a match.", fullName()));
+        LOGGER.info("{} is officiating a match.", fullName());
     }
 
     @Override
@@ -42,7 +46,7 @@ public class Referee extends Person implements Payable {
 
     @Override
     public void pay(double amount) {
-        System.out.printf("Paid %.2f to referee %s%n", amount, fullName());
+        LOGGER.info("Paid {:.2f} to referee {}", amount, fullName());
     }
 
     public void setMatchFee(double fee) {

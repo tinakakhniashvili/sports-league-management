@@ -1,6 +1,8 @@
 package com.solvd.sportsleaguemanagement.organization;
 
 import com.solvd.sportsleaguemanagement.person.Player;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -14,6 +16,8 @@ import java.util.stream.Collectors;
 
 public class League extends Organization {
 
+    private static final Logger LOGGER = LogManager.getLogger(League.class);
+
     private static final int MAX_TEAMS = 50;
     public static final BigDecimal TAX_RATE;
 
@@ -24,7 +28,7 @@ public class League extends Organization {
 
     static {
         TAX_RATE = new BigDecimal("0.18");
-        System.out.println("League class loaded, TAX_RATE initialized to 18%");
+        LogManager.getLogger(League.class).info("League class loaded, TAX_RATE initialized to 18%");
     }
 
     public League(Integer id, String name, Year foundedYear, String sportType, Year seasonYear) {
@@ -38,8 +42,8 @@ public class League extends Organization {
     }
 
     protected void scheduleSeason() {
-        System.out.printf(
-                "Scheduling %s league %s for %s with %d teams.%n",
+        LOGGER.info(
+                "Scheduling {} league {} for {} with {} teams.",
                 sportType, seasonYear, getName(), getNumberOfTeams()
         );
     }

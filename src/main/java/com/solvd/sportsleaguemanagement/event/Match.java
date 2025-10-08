@@ -4,6 +4,8 @@ import com.solvd.sportsleaguemanagement.person.Player;
 import com.solvd.sportsleaguemanagement.person.Referee;
 import com.solvd.sportsleaguemanagement.types.MatchPhase;
 import com.solvd.sportsleaguemanagement.common.annotations.Auditable;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -13,6 +15,8 @@ import java.util.Objects;
 
 @Auditable("Match entity")
 public class Match extends Event {
+
+    private static final Logger LOGGER = LogManager.getLogger(Match.class);
 
     private static final int MAX_SCORE = 99;
 
@@ -30,7 +34,7 @@ public class Match extends Event {
     private MatchPhase phase = MatchPhase.PREPARATION;
 
     static {
-        System.out.println("Match class loaded");
+        LogManager.getLogger(Match.class).debug("Match class loaded");
     }
 
     public Match(Integer id, String homeTeam, String awayTeam) {
@@ -50,7 +54,7 @@ public class Match extends Event {
 
     @Auditable("Main action")
     public void play() {
-        System.out.printf("Match: %s vs %s at %s.%n", homeTeam, awayTeam, stadiumName);
+        LOGGER.info("Match: {} vs {} at {}.", homeTeam, awayTeam, stadiumName);
     }
 
     public String getHomeTeam() {

@@ -2,6 +2,8 @@ package com.solvd.sportsleaguemanagement.organization;
 
 import com.solvd.sportsleaguemanagement.contracts.Identifiable;
 import com.solvd.sportsleaguemanagement.contracts.Payable;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.time.Year;
 import java.util.Collection;
@@ -9,6 +11,7 @@ import java.util.Objects;
 
 public abstract class Organization implements Identifiable {
 
+    private static final Logger LOGGER = LogManager.getLogger(Organization.class);
     private static final int MIN_NAME_LENGTH = 2;
 
     private Integer id;
@@ -16,7 +19,7 @@ public abstract class Organization implements Identifiable {
     private Year foundedYear;
 
     static {
-        System.out.println("Organization class loaded");
+        LogManager.getLogger(Organization.class).debug("Organization class loaded");
     }
 
     public Organization(Integer id, String name, Year foundedYear) {
@@ -69,6 +72,7 @@ public abstract class Organization implements Identifiable {
         for (Payable p : staff) {
             double salary = p.getSalary();
             p.pay(salary);
+            LOGGER.info("Processed payroll: paid {} to {}", String.format("%.2f", salary), p);
         }
     }
 

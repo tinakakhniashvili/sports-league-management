@@ -3,14 +3,17 @@ package com.solvd.sportsleaguemanagement.person;
 import com.solvd.sportsleaguemanagement.contracts.Payable;
 import com.solvd.sportsleaguemanagement.contracts.Trainable;
 import com.solvd.sportsleaguemanagement.common.annotations.Auditable;
+import com.solvd.sportsleaguemanagement.types.Position;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.time.LocalDate;
 import java.util.Objects;
 
-import com.solvd.sportsleaguemanagement.types.Position;
-
 @Auditable("Critical entity: Player")
 public class Player extends Person implements Payable, Trainable {
+
+    private static final Logger LOGGER = LogManager.getLogger(Player.class);
 
     protected Position position;
     private int jerseyNumber;
@@ -39,7 +42,7 @@ public class Player extends Person implements Payable, Trainable {
     }
 
     public void scoreGoal() {
-        System.out.println(String.format("%s scored a goal!", fullName()));
+        LOGGER.info("{} scored a goal!", fullName());
     }
 
     public boolean isEligibleToPlay() {
@@ -53,7 +56,7 @@ public class Player extends Person implements Payable, Trainable {
 
     @Override
     public void pay(double amount) {
-        System.out.printf("Paid %.2f to player %s%n", amount, fullName());
+        LOGGER.info("Paid {} to player {}", String.format("%.2f", amount), fullName());
     }
 
     public void setSalary(double salary) {
@@ -64,7 +67,7 @@ public class Player extends Person implements Payable, Trainable {
     @Auditable("Training action")
     @Override
     public void train() {
-        System.out.printf("Player %s is training%n", fullName());
+        LOGGER.info("Player {} is training", fullName());
     }
 
     public Position getPosition() {

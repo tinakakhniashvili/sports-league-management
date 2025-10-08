@@ -26,3 +26,9 @@
 [LOW] corr=260dbc26-bc3b-46e9-b0db-a1ea11abfc11 | Booked No description at National Stadium | expected=18000 | ticket=10.00 | revenue=180000.00
 [LOW] corr=f71bf428-af8d-46d5-b0d7-8969c5ada9d5 | Booked Red Hawks vs Blue Bears at National Stadium | expected=18000 | ticket=20.00 | revenue=360000.00
 [LOW] corr=96a30c90-cab1-4499-a96c-8ee26559ee48 | Booked No description at National Stadium | expected=18000 | ticket=10.00 | revenue=180000.00
+[LOW] corr=39c1ab45-3c59-4371-a479-50b077607143 | Booked Red Hawks vs Blue Bears at National Stadium | expected=18000 | ticket=20.00 | revenue=360000.00
+[LOW] corr=d7a22c14-776f-4ce9-b667-3a964e3d2dae | Booked No description at National Stadium | expected=18000 | ticket=10.00 | revenue=180000.00
+[LOW] corr=a292f7f9-957d-4318-b1a6-142d39857908 | Booked Red Hawks vs Blue Bears at National Stadium | expected=18000 | ticket=20.00 | revenue=360000.00
+[LOW] corr=a6349b56-3ac9-4a98-80ac-fbbca1b8b07e | Booked No description at National Stadium | expected=18000 | ticket=10.00 | revenue=180000.00
+[LOW] corr=c93670bf-edf5-405f-a8a3-fc793a23d831 | Booked Red Hawks vs Blue Bears at National Stadium | expected=18000 | ticket=20.00 | revenue=360000.00
+[LOW] corr=cfa95066-79da-429b-a9e6-4e8bb6a0fa9f | Booked No description at National Stadium | expected=18000 | ticket=10.00 | revenue=180000.00

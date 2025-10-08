@@ -2,11 +2,15 @@ package com.solvd.sportsleaguemanagement.person;
 
 import com.solvd.sportsleaguemanagement.contracts.Payable;
 import com.solvd.sportsleaguemanagement.contracts.Trainable;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.time.LocalDate;
 import java.util.Objects;
 
 public class Coach extends Person implements Payable, Trainable {
+
+    private static final Logger LOGGER = LogManager.getLogger(Coach.class);
 
     private int experienceYears;
     private String licenseLevel;
@@ -33,7 +37,7 @@ public class Coach extends Person implements Payable, Trainable {
     }
 
     public void trainTeam() {
-        System.out.println(String.format("%s is training the team.", fullName()));
+        LOGGER.info("{} is training the team.", fullName());
     }
 
     @Override
@@ -43,7 +47,7 @@ public class Coach extends Person implements Payable, Trainable {
 
     @Override
     public void pay(double amount) {
-        System.out.printf("Paid %.2f to coach %s%n", amount, fullName());
+        LOGGER.info("Paid {:.2f} to coach {}", amount, fullName());
     }
 
     public void setSalary(double salary) {
@@ -53,7 +57,7 @@ public class Coach extends Person implements Payable, Trainable {
 
     @Override
     public void train() {
-        System.out.printf("Coach %s conducts a training session%n", fullName());
+        LOGGER.info("Coach {} conducts a training session", fullName());
     }
 
     public int getExperienceYears() {

@@ -12,6 +12,8 @@ import com.solvd.sportsleaguemanagement.person.Person;
 import com.solvd.sportsleaguemanagement.person.Player;
 import com.solvd.sportsleaguemanagement.person.Referee;
 import com.solvd.sportsleaguemanagement.types.Severity;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -25,6 +27,8 @@ import java.util.function.*;
 import java.util.stream.Collectors;
 
 public class BookingService {
+
+    private static final Logger LOGGER = LogManager.getLogger(BookingService.class);
 
     private static final BigDecimal BASE_TICKET_PRICE = new BigDecimal("20.00");
 
@@ -54,7 +58,7 @@ public class BookingService {
         };
         Runnable after = () -> {
         };
-        Consumer<String> notifier = System.out::println;
+        Consumer<String> notifier = LOGGER::info;
         Consumer<BookingLog> audit = l -> {
         };
         Function<Event, String> descriptor = e -> {

@@ -2,12 +2,16 @@ package com.solvd.sportsleaguemanagement.event;
 
 import com.solvd.sportsleaguemanagement.contracts.Identifiable;
 import com.solvd.sportsleaguemanagement.contracts.Schedulable;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 public abstract class Event implements Schedulable, Identifiable {
+
+    private static final Logger LOGGER = LogManager.getLogger(Event.class);
 
     private static final String DEFAULT_DESCRIPTION = "No description";
     private static final String DEFAULT_TITLE = "Untitled";
@@ -19,7 +23,7 @@ public abstract class Event implements Schedulable, Identifiable {
     private String description = DEFAULT_DESCRIPTION;
 
     static {
-        System.out.println("Event class loaded");
+        LogManager.getLogger(Event.class).debug("Event class loaded");
     }
 
     public Event(Integer id, LocalDateTime dateTime) {
@@ -35,7 +39,7 @@ public abstract class Event implements Schedulable, Identifiable {
     public abstract BigDecimal priceMultiplier();
 
     protected void startEvent() {
-        System.out.println("Starting event: " + this);
+        LOGGER.info("Starting event: {}", this);
     }
 
     protected void reschedule(LocalDateTime when) {

@@ -1,6 +1,7 @@
 package com.solvd.sportsleaguemanagement.person;
 
 import com.solvd.sportsleaguemanagement.contracts.Identifiable;
+import org.apache.logging.log4j.LogManager;
 
 import java.time.LocalDate;
 import java.util.Objects;
@@ -15,7 +16,7 @@ public abstract class Person implements Identifiable {
     private LocalDate birthDate;
 
     static {
-        System.out.println("Person class loaded");
+        LogManager.getLogger(Person.class).debug("Person class loaded");
     }
 
     public Person(Integer id, String name, String surname, LocalDate birthDate) {

@@ -1,17 +1,21 @@
 package com.solvd.sportsleaguemanagement.facility;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.math.BigDecimal;
 import java.util.Objects;
 
 public class TrainingGround extends Facility {
 
+    private static final Logger LOGGER = LogManager.getLogger(TrainingGround.class);
     private static final int MIN_FIELDS = 1;
 
     private boolean indoor;
     private int fieldsCount;
 
     static {
-        System.out.println("TrainingGround class loaded");
+        LogManager.getLogger(TrainingGround.class).debug("TrainingGround class loaded");
     }
 
     public TrainingGround(Integer id, String name, String location, boolean indoor, int fieldsCount) {
@@ -31,7 +35,7 @@ public class TrainingGround extends Facility {
     }
 
     public void conductTraining() {
-        System.out.printf("%s training ground is conducting training on %d fields.%n", getName(), fieldsCount);
+        LOGGER.info("{} training ground is conducting training on {} fields.", getName(), fieldsCount);
     }
 
     public boolean isIndoor() {

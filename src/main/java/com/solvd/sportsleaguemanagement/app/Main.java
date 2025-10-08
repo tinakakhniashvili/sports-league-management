@@ -23,6 +23,8 @@ import com.solvd.sportsleaguemanagement.types.Currency;
 import com.solvd.sportsleaguemanagement.types.Position;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
@@ -38,6 +40,8 @@ import java.util.*;
 import java.util.function.*;
 
 public class Main {
+
+    private static final Logger LOGGER = LogManager.getLogger(Main.class);
 
     public static void main(String[] args) throws Exception {
         URL url = Main.class.getResource("/book.txt");
@@ -63,8 +67,8 @@ public class Main {
         teams.forEach(teamRepo::add);
         players.forEach(playerRepo::add);
 
-        System.out.println("Team repo size: " + teamRepo.size());
-        System.out.println("Player repo empty? " + playerRepo.isEmpty());
+        LOGGER.info("Team repo size: {}", teamRepo.size());
+        LOGGER.info("Player repo empty? {}", playerRepo.isEmpty());
 
         BookingService booking = new BookingService();
         booking.addEvent(schedule);
@@ -74,16 +78,16 @@ public class Main {
         match.play();
 
         Money sample = new Money(new BigDecimal("20.00"), Currency.USD);
-        System.out.println(sample.toString());
+        LOGGER.info(sample.toString());
 
         Predicate<Event> eventPolicy = Objects::nonNull;
         Predicate<Bookable> availabilityPolicy = b -> b != null && b.isAvailable();
         BiFunction<Event, Integer, java.math.BigDecimal> pricingPolicy = (e, att) -> booking.calculateTicketPrice(e.priceMultiplier());
         UnaryOperator<Integer> attendanceAdjuster = UnaryOperator.identity();
         Supplier<java.util.UUID> correlationId = java.util.UUID::randomUUID;
-        Runnable before = () -> System.out.println("Before booking hook");
-        Runnable after = () -> System.out.println("After booking hook");
-        Consumer<String> notifier = System.out::println;
+        Runnable before = () -> LOGGER.info("Before booking hook");
+        Runnable after = () -> LOGGER.info("After booking hook");
+        Consumer<String> notifier = LOGGER::info;
         Consumer<BookingLog> audit = l -> {};
         Function<Event, String> descriptor = e -> (e instanceof Match m) ? (m.getHomeTeam() + " vs " + m.getAwayTeam()) : e.getDescription();
 
@@ -105,9 +109,9 @@ public class Main {
                     descriptor
             );
         } catch (OverbookingException e) {
-            System.err.println("Could not book match: " + e.getMessage());
+            LOGGER.error("Could not book match: {}", e.getMessage());
         } catch (RuntimeException e) {
-            System.err.println("Booking failed: " + e.getMessage());
+            LOGGER.error("Booking failed: {}", e.getMessage());
         }
 
         stadium.cancel();
@@ -130,9 +134,9 @@ public class Main {
                     descriptor
             );
         } catch (OverbookingException e) {
-            System.err.println("Could not book schedule: " + e.getMessage());
+            LOGGER.error("Could not book schedule: {}", e.getMessage());
         } catch (RuntimeException e) {
-            System.err.println("Booking failed: " + e.getMessage());
+            LOGGER.error("Booking failed: {}", e.getMessage());
         }
 
         coach.train();
@@ -147,46 +151,46 @@ public class Main {
 
         teams.get(0).printTeamInfo();
         int generatedId = IdGenerator.nextId();
-        System.out.println("Generated id: " + generatedId);
+        LOGGER.info("Generated id: {}", generatedId);
 
-        System.out.println("\n=== System Details ===");
-        System.out.println(teams.get(0));
-        System.out.println(teams.get(1));
-        System.out.println(league);
-        System.out.println(match);
-        System.out.println("Booked events: " + booking.getBookedEvents().size());
+        LOGGER.info("\n=== System Details ===");
+        LOGGER.info(teams.get(0));
+        LOGGER.info(teams.get(1));
+        LOGGER.info(league);
+        LOGGER.info(match);
+        LOGGER.info("Booked events: {}", booking.getBookedEvents().size());
 
         List<Player> roster = teams.get(0).getRoster();
-        System.out.println("Roster size: " + roster.size());
+        LOGGER.info("Roster size: {}", roster.size());
         Player firstList = roster.get(0);
-        roster.stream().map(Player::fullName).forEach(n -> System.out.println("Roster player: " + n));
+        roster.stream().map(Player::fullName).forEach(n -> LOGGER.info("Roster player: {}", n));
 
         Set<Coach> coaches = new HashSet<>();
         coaches.add(coach);
-        System.out.println("Coaches isEmpty? " + coaches.isEmpty());
+        LOGGER.info("Coaches isEmpty? {}", coaches.isEmpty());
         Coach firstSet = coaches.iterator().next();
-        System.out.println("First coach: " + firstSet.fullName());
+        LOGGER.info("First coach: {}", firstSet.fullName());
         coaches.remove(coach);
 
         Map<Facility, List<Event>> bookingsByFacility = new HashMap<>();
         bookingsByFacility.put(stadium, new ArrayList<>());
         bookingsByFacility.get(stadium).add(match);
-        System.out.println("Map size: " + bookingsByFacility.size());
-        bookingsByFacility.entrySet().stream().forEach(e -> System.out.println(e.getKey().getName() + " -> events: " + e.getValue().size()));
+        LOGGER.info("Map size: {}", bookingsByFacility.size());
+        bookingsByFacility.entrySet().stream().forEach(e -> LOGGER.info("{} -> events: {}", e.getKey().getName(), e.getValue().size()));
 
         Result<Team> maybeTeam = Optional.ofNullable(teamRepo.get(teams.get(0).getId())).map(Result::ok).orElse(Result.error("Team not found"));
-        System.out.println("Result ok? " + maybeTeam.isOk());
+        LOGGER.info("Result ok? {}", maybeTeam.isOk());
 
-        System.out.println("\n=== Reflection Demo ===");
+        LOGGER.info("\n=== Reflection Demo ===");
         Class<?> playerClass = Player.class;
         for (Field f : playerClass.getDeclaredFields()) {
-            System.out.printf("%s %s %s%n", Modifier.toString(f.getModifiers()), f.getType().getSimpleName(), f.getName());
+            LOGGER.info("{} {} {}", Modifier.toString(f.getModifiers()), f.getType().getSimpleName(), f.getName());
         }
         for (Constructor<?> c : playerClass.getDeclaredConstructors()) {
-            System.out.printf("%s %s(%s)%n", Modifier.toString(c.getModifiers()), c.getName(), Arrays.toString(c.getParameterTypes()));
+            LOGGER.info("{} {}({})", Modifier.toString(c.getModifiers()), c.getName(), Arrays.toString(c.getParameterTypes()));
         }
         for (Method m : playerClass.getDeclaredMethods()) {
-            System.out.printf("%s %s %s(%s)%n", Modifier.toString(m.getModifiers()), m.getReturnType().getSimpleName(), m.getName(), Arrays.toString(m.getParameterTypes()));
+            LOGGER.info("{} {} {}({})", Modifier.toString(m.getModifiers()), m.getReturnType().getSimpleName(), m.getName(), Arrays.toString(m.getParameterTypes()));
         }
         Constructor<?> ctor = playerClass.getConstructor(Integer.class, String.class, String.class, LocalDate.class, Position.class, int.class, boolean.class);
         Object playerObj = ctor.newInstance(1, "Gocha", "Kakhniashvili", LocalDate.of(1990, 5, 1), Position.FORWARD, 10, true);
@@ -194,11 +198,11 @@ public class Main {
         trainMethod.invoke(playerObj);
         if (playerClass.isAnnotationPresent(Auditable.class)) {
             Auditable ann = playerClass.getAnnotation(Auditable.class);
-            System.out.println("Player class annotated: " + ann.value());
+            LOGGER.info("Player class annotated: {}", ann.value());
         }
         for (Method m : playerClass.getDeclaredMethods()) {
             if (m.isAnnotationPresent(Auditable.class)) {
-                System.out.println("Method " + m.getName() + " annotated: " + m.getAnnotation(Auditable.class).value());
+                LOGGER.info("Method {} annotated: {}", m.getName(), m.getAnnotation(Auditable.class).value());
             }
         }
     }

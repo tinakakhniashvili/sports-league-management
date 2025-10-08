@@ -2,6 +2,8 @@ package com.solvd.sportsleaguemanagement.event;
 
 import com.solvd.sportsleaguemanagement.contracts.Schedulable;
 import com.solvd.sportsleaguemanagement.exception.ScheduleConflictException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -14,6 +16,8 @@ import java.util.stream.Collectors;
 
 public class Schedule extends Event {
 
+    private static final Logger LOGGER = LogManager.getLogger(Schedule.class);
+
     private static final int MAX_ROUNDS = 50;
     private final List<Schedulable> items = new ArrayList<>();
 
@@ -23,7 +27,7 @@ public class Schedule extends Event {
     private long spectatorsExpected;
 
     static {
-        System.out.println("Schedule class loaded");
+        LogManager.getLogger(Schedule.class).debug("Schedule class loaded");
     }
 
     public Schedule(Integer id, String leagueName, int roundNumber) {
@@ -43,8 +47,7 @@ public class Schedule extends Event {
     }
 
     public void publish() {
-        System.out.printf("Publishing schedule for %s, round %d on %s with expected spectators: %d%n",
-                leagueName, roundNumber, roundDate, spectatorsExpected);
+        LOGGER.info("Publishing schedule for {}, round {} on {} with expected spectators: {}", leagueName, roundNumber, roundDate, spectatorsExpected);
     }
 
     public void add(Schedulable item) {
@@ -83,7 +86,7 @@ public class Schedule extends Event {
                     String endStr = (end != null) ? end.format(fmt) : "N/A";
                     return String.format("%s: %s (%s)", s.getTitle(), startStr, endStr);
                 })
-                .forEach(System.out::println);
+                .forEach(LOGGER::info);
     }
 
     private boolean overlaps(Schedulable a, Schedulable b) {

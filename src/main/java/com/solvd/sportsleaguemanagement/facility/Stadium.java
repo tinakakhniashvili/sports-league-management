@@ -1,10 +1,14 @@
 package com.solvd.sportsleaguemanagement.facility;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.math.BigDecimal;
 import java.util.Objects;
 
 public class Stadium extends Facility {
 
+    private static final Logger LOGGER = LogManager.getLogger(Stadium.class);
     private static final int MIN_CAPACITY = 1000;
 
     private int capacity;
@@ -13,7 +17,7 @@ public class Stadium extends Facility {
     private char sectorLetter;
 
     static {
-        System.out.println("Stadium class loaded");
+        LogManager.getLogger(Stadium.class).debug("Stadium class loaded");
     }
 
     public Stadium(Integer id, String name, String location, int capacity, String surfaceType,
@@ -37,7 +41,7 @@ public class Stadium extends Facility {
     }
 
     public void hostMatch() {
-        System.out.printf("%s stadium is hosting a match with capacity %d.%n", getName(), capacity);
+        LOGGER.info("{} stadium is hosting a match with capacity {}.", getName(), capacity);
     }
 
     public int getCapacity() {

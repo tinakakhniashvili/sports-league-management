@@ -4,12 +4,15 @@ import com.solvd.sportsleaguemanagement.contracts.Bookable;
 import com.solvd.sportsleaguemanagement.contracts.Identifiable;
 import com.solvd.sportsleaguemanagement.exception.FacilityUnavailableException;
 import com.solvd.sportsleaguemanagement.person.Person;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.math.BigDecimal;
 import java.util.Objects;
 
 public abstract class Facility implements Bookable, Identifiable {
 
+    private static final Logger LOGGER = LogManager.getLogger(Facility.class);
     private static final int MIN_NAME_LENGTH = 3;
 
     private Integer id;
@@ -20,7 +23,7 @@ public abstract class Facility implements Bookable, Identifiable {
     private Person bookedBy;
 
     static {
-        System.out.println("Facility class loaded");
+        LogManager.getLogger(Facility.class).debug("Facility class loaded");
     }
 
     public Facility(Integer id, String name, String location) {
@@ -37,7 +40,7 @@ public abstract class Facility implements Bookable, Identifiable {
     }
 
     public void open() {
-        System.out.printf("Facility %s at %s is now open.%n", name, location);
+        LOGGER.info("Facility {} at {} is now open.", name, location);
     }
 
     public Integer getIdNumber() {

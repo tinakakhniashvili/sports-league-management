@@ -5,6 +5,8 @@ import com.solvd.sportsleaguemanagement.contracts.Trainable;
 import com.solvd.sportsleaguemanagement.exception.PlayerNotEligibleException;
 import com.solvd.sportsleaguemanagement.person.Coach;
 import com.solvd.sportsleaguemanagement.person.Player;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.time.Year;
 import java.util.ArrayList;
@@ -15,6 +17,8 @@ import java.util.stream.Collectors;
 
 @Auditable("Team entity")
 public class Team extends Organization {
+
+    private static final Logger LOGGER = LogManager.getLogger(Team.class);
 
     private static final int MAX_PLAYERS = 30;
 
@@ -29,7 +33,7 @@ public class Team extends Organization {
     private int disciplinaryPoints;
 
     static {
-        System.out.println("Team class loaded");
+        LogManager.getLogger(Team.class).debug("Team class loaded");
     }
 
     public enum Division {EAST, WEST, NORTH, SOUTH}
@@ -44,14 +48,14 @@ public class Team extends Organization {
     }
 
     public void playMatch() {
-        System.out.printf(
-                "%s from %s is playing a match with %d players.%n",
+        LOGGER.info(
+                "{} from {} is playing a match with {} players.",
                 getName(), city, getPlayersCount()
         );
     }
 
     public final void printTeamInfo() {
-        System.out.println(this);
+        LOGGER.info(this);
     }
 
     public void addPlayer(Player player) {
