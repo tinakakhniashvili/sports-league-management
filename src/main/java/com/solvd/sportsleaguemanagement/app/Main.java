@@ -25,14 +25,21 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import com.solvd.sportsleaguemanagement.db.ConnectionPool;
+import com.solvd.sportsleaguemanagement.concurrency.DaoTaskRunnable;
+import com.solvd.sportsleaguemanagement.concurrency.DaoTaskThread;
+import com.solvd.sportsleaguemanagement.concurrency.DaoCallable;
+import com.solvd.sportsleaguemanagement.concurrency.CompletableDemos;
 
+import java.util.concurrent.*;
+import java.io.InputStream;
+import org.apache.commons.io.IOUtils;
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.Year;
@@ -44,13 +51,20 @@ public class Main {
     private static final Logger LOGGER = LogManager.getLogger(Main.class);
 
     public static void main(String[] args) throws Exception {
-        URL url = Main.class.getResource("/book.txt");
-        if (url != null) {
-            String text = FileUtils.readFileToString(new File(url.toURI()), StandardCharsets.UTF_8);
-            String[] words = StringUtils.split(StringUtils.lowerCase(text).replaceAll("[^\\p{L}\\p{Nd}]+", " "));
-            long unique = Arrays.stream(words).filter(StringUtils::isNotBlank).distinct().count();
-            FileUtils.writeStringToFile(new File("target/unique-words.txt"), "Unique words: " + unique, StandardCharsets.UTF_8);
+        try (InputStream is = Main.class.getResourceAsStream("/book.txt")) {
+            if (is != null) {
+                String text = IOUtils.toString(is, StandardCharsets.UTF_8);
+                String[] words = StringUtils.split(StringUtils.lowerCase(text).replaceAll("[^\\p{L}\\p{Nd}]+", " "));
+                long unique = Arrays.stream(words).filter(StringUtils::isNotBlank).distinct().count();
+                FileUtils.writeStringToFile(new File("target/unique-words.txt"), "Unique words: " + unique, StandardCharsets.UTF_8);
+            } else {
+                LOGGER.warn("book.txt not found on classpath");
+            }
         }
+
+        demoThreads();
+        demoExecutorService();
+        demoCompletableFutures();
 
         Coach coach = createCoach();
         List<Player> players = createPlayers();
@@ -207,6 +221,45 @@ public class Main {
         }
     }
 
+    private static void demoThreads() throws InterruptedException {
+        ConnectionPool pool = ConnectionPool.getInstance(5);
+        Thread t1 = new DaoTaskThread(pool, 1);
+        Thread t2 = new DaoTaskThread(pool, 2);
+        Thread t3 = new Thread(new DaoTaskRunnable(pool, 3), "Runnable-3");
+        Thread t4 = new Thread(new DaoTaskRunnable(pool, 4), "Runnable-4");
+        Thread t5 = new Thread(new DaoTaskRunnable(pool, 5), "Runnable-5");
+        Thread t6 = new DaoTaskThread(pool, 6);
+        Thread t7 = new Thread(new DaoTaskRunnable(pool, 7), "Runnable-7");
+        t1.start(); t2.start(); t3.start(); t4.start(); t5.start(); t6.start(); t7.start();
+        t1.join();  t2.join();  t3.join();  t4.join();  t5.join();  t6.join();  t7.join();
+    }
+
+    private static void demoExecutorService() throws InterruptedException {
+        ConnectionPool pool = ConnectionPool.getInstance(5);
+        ExecutorService exec = Executors.newFixedThreadPool(7);
+        try {
+            var tasks = new ArrayList<Callable<String>>();
+            for (int i = 1; i <= 7; i++) tasks.add(new DaoCallable(pool, 100 + i));
+            var futures = exec.invokeAll(tasks);
+            for (Future<String> f : futures) {
+                try {
+                    f.get();
+                } catch (ExecutionException e) {
+                    e.getCause().printStackTrace();
+                }
+            }
+        } finally {
+            exec.shutdown();
+            exec.awaitTermination(5, TimeUnit.SECONDS);
+        }
+    }
+
+    private static void demoCompletableFutures() {
+        CompletableDemos.runBasicPipeline();
+        CompletableDemos.runCombineExample();
+        CompletableDemos.runWithTimeoutAndFallback();
+    }
+
     private static Coach createCoach() {
         return new Coach(1, "Giorgi", "Beridze", LocalDate.of(1980, 5, 12), 15, "UEFA Pro");
     }
@@ -232,7 +285,6 @@ public class Main {
         teamA.setDivision(Team.Division.EAST);
         players.forEach(p -> { teamA.addPlayer(p); teamA.addMember(p); });
         teamA.addMember(coach);
-
         Team teamB = new Team(102, "Blue Bears", Year.of(2010), "Batumi");
         teamB.setDivision(Team.Division.WEST);
         return List.of(teamA, teamB);
